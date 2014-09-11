@@ -1,0 +1,30 @@
+{
+  "name": "",
+  "description": "A(nother) css injector for browserify livereload aware",
+  "version": "0.0.0",
+  "author": "Jean Ponchon <jean.ponchon@novadiscovery.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nopnop/cssy.git"
+  },
+  "licenses": "MIT",
+  "main": "index.js",
+  "engines": {
+      "node": ">= 0.10"
+  },
+  "scripts": {
+    "test": "mocha",
+    "spec": "mocha --reporter spec",
+    "monitor": "mocha --reporter spec --watch",
+    "debugtest": "mocha --debug-brk --reporter spec",
+    "coverage": "rm -rf ./lib-cov && jscoverage ./lib ./lib-cov && COVERAGE=true mocha --reporter html-cov > ./coverage.html && rm -rf ./lib-cov",
+    "jshint": "./node_modules/.bin/jshint --exclude node_modules"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "expect.js": "*",
+    "mocha":  "*",
+    "jshint": "*"
+  },
+  "keywords": []
+}
