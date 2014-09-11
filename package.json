@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "A(nother) css injector for browserify livereload aware",
+  "name": "cssy",
+  "description": "A(nother) css injector for browserify",
   "version": "0.0.0",
   "author": "Jean Ponchon <jean.ponchon@novadiscovery.com>",
   "repository": {
@@ -8,9 +8,9 @@
     "url": "https://github.com/nopnop/cssy.git"
   },
   "licenses": "MIT",
-  "main": "index.js",
+  "main": "./index.js",
   "engines": {
-      "node": ">= 0.10"
+    "node": ">= 0.10"
   },
   "scripts": {
     "test": "mocha",
@@ -20,11 +20,29 @@
     "coverage": "rm -rf ./lib-cov && jscoverage ./lib ./lib-cov && COVERAGE=true mocha --reporter html-cov > ./coverage.html && rm -rf ./lib-cov",
     "jshint": "./node_modules/.bin/jshint --exclude node_modules"
   },
-  "dependencies": {},
+  "dependencies": {
+    "chokidar": "git+https://github.com/nopnop/chokidar.git#fixUnwatchFileIssue",
+    "concat-stream": "^1.4.6",
+    "debug": "^2.0.0",
+    "resolve": "^1.0.0",
+    "socket.io": "^1.1.0",
+    "socket.io-client": "^1.1.0",
+    "through2": "^1.1.1",
+    "topcoat-resin": "^0.5.0",
+    "websocket": "^1.0.8"
+  },
   "devDependencies": {
     "expect.js": "*",
-    "mocha":  "*",
+    "mocha": "*",
     "jshint": "*"
   },
-  "keywords": []
+  "browser": "./browser.js",
+  "keywords": [
+    "css",
+    "browserify",
+    "browserify-transform"
+  ],
+  "publishConfig": {
+    "registry": "http://registry.npmjs.org/"
+  }
 }

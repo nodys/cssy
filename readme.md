@@ -1,15 +1,10 @@
 # cssy
 
-> A(nother) css injector for browserify livereload aware
+> A(nother) css injector for browserify livereload aware and rework enabled
 
 ## Features
 
   -
 
 ## Getting Started
-Install the module with: `npm install cssy`
-
-```javascript
-var cssy = require('cssy');
-cssy.awesome(); // "hello "
-```
+Beta - dev ongoing
