@@ -25,7 +25,9 @@
     "debug": "^2.0.0",
     "relative-package": "^1.0.0",
     "through2": "^1.1.1",
-    "websocket": "^1.0.8"
+    "websocket": "^1.0.8",
+    "resolve": "^1.0.0",
+    "stream-combiner": "^0.2.1"
   },
   "devDependencies": {
     "expect.js": "*",
