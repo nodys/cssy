@@ -1,6 +1,6 @@
 /* jshint undef: false, unused: false */
 
-var cssy = require('../lib/cssy')
+var cssy = require('../')
 var expect = require('expect.js')
 var join   = require('path').join
 
