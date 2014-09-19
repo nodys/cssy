@@ -26,12 +26,7 @@
     "debug": "^2.0.0",
     "relative-package": "^1.0.0",
     "resolve": "^1.0.0",
-    "rework": "^1.0.1",
-    "rework-deduplicate": "^0.1.1",
-    "rework-inherit": "^0.2.3",
-    "rework-namespace": "^0.3.0",
-    "rework-npm": "^1.0.0",
-    "rework-vars": "^3.1.1",
+    "rework": "1.x",
     "stream-combiner": "^0.2.1",
     "through2": "^1.1.1",
     "websocket": "^1.0.8"
