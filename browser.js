@@ -1,10 +1,5 @@
-var CssyIO = require('./cssyio')
 
-function getCssyIO() {
-  return getCssyIO._cssyio = getCssyIO._cssyio || (new CssyIO())
-}
-
-module.exports = function(css, hash) {
+module.exports = function(css, hash, cssyio) {
 
   function cssy() {
     return cssy.append.apply(null, arguments)
@@ -60,18 +55,16 @@ module.exports = function(css, hash) {
     return el;
   }
 
-  cssy.source = function() {
-    return css;
-  }
 
   cssy.onChange = function(listener) {
-    getCssyIO().on('change:' + hash, listener)
+    cssyio && cssyio.on('change:' + hash, listener)
   }
 
   cssy.offChange = function(listener) {
-    getCssyIO().off('change:' + hash, listener)
+    cssyio && cssyio.off('change:' + hash, listener)
   }
 
+  cssy.src = css;
 
 
   return cssy;
