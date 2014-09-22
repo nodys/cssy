@@ -21,7 +21,6 @@
     "jshint": "./node_modules/.bin/jshint --exclude node_modules"
   },
   "dependencies": {
-    "autoprefixer": "^3.1.0",
     "concat-stream": "^1.4.6",
     "debug": "^2.0.0",
     "relative-package": "^1.0.0",

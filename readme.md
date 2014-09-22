@@ -1,6 +1,6 @@
 # cssy
 
-> A(nother) css injector for browserify livereload aware and rework enabled
+> A(nother) css injector for browserify with livereload and rework
 
 ## Features
 
