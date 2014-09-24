@@ -29,7 +29,7 @@ function connectSocket() {
     var message = JSON.parse(event.data);
     switch(message.type) {
       case 'change':
-        exports.trigger('change:' + message.data.hash, message.data)
+        exports.trigger('change:' + message.data.uid, message.data)
         break;
     }
   }

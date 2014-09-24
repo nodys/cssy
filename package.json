@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "concat-stream": "^1.4.6",
+    "convert-source-map": "^0.4.1",
     "debug": "^2.0.0",
     "relative-package": "^1.0.0",
     "resolve": "^1.0.0",
