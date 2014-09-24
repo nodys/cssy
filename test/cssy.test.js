@@ -1,11 +1,12 @@
 /* jshint undef: false, unused: false */
 
-var cssy      = require('../')
-var expect    = require('expect.js')
-var join      = require('path').join
-var processor = require('../lib/processor')
-var read      = require('fs').readFileSync
-
+var expect           = require('expect.js')
+var join             = require('path').join
+var processor        = require('../lib/processor')
+var transform        = require('../lib/transform')
+var read             = require('fs').readFileSync
+var createReadStream = require('fs').createReadStream
+var concatStream     = require('concat-stream')
 
 function fixp(filename) {
   return join(__dirname, '/fixtures', filename);
@@ -30,6 +31,11 @@ describe('cssy', function(){
       var filename = fixp('basic/app.js');
       var proc     = processor(filename);
       expect(proc).to.be(undefined)
+    })
+
+    it('should use `match` option to filter acceptable source (override regex for .css)', function() {
+      expect(processor(fixp('filter/me.mycss'))).to.be.a('function')
+      expect(processor(fixp('filter/notme.css'))).to.be(undefined)
     })
 
     it('should process a css source', function() {
@@ -73,6 +79,33 @@ describe('cssy', function(){
       })
 
     })
+
+  })
+
+  describe('transform', function() {
+
+    it('should not transform if source is not css', function(done) {
+      var filename = fixp('basic/app.js');
+      createReadStream(filename)
+      .pipe(transform(filename))
+      .pipe(concatStream(function(result) {
+        expect(result.toString()).to.eql(read(filename).toString())
+        done();
+      }))
+    })
+
+
+    it('should process a css source', function(done) {
+      var filename = fixp('rework/source.css');
+      createReadStream(filename)
+      .pipe(transform(filename))
+      .pipe(concatStream(function(result) {
+        expect(result.toString())
+          .to.eql("module.exports = (require('cssy/browser'))(\"body {\\n  font-size: 14px;\\n}\", '986287257254767c753a0e9ca2097afb', [])")
+        done();
+      }))
+    })
+
 
   })
 })
