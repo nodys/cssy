@@ -1,59 +1,55 @@
 
 module.exports = function(css, uid, imports, cssyio) {
 
-
-
   function cssy() {
     return cssy.insert.apply(null, arguments)
   }
 
   cssy.insert = function(to) {
+
     var imported = imports.map(function(imp) {
-      var el = imp.cssy.insert(to);
-      el.setAttribute('data-cssy-uid-parent', uid)
+      var sub = imp.cssy(to);
       if(imp.media) {
-        el.setAttribute('media', imp.media)
+        sub.element.setAttribute('media', imp.media)
       }
-      return el;
+      return sub;
     })
 
-    var el = cssy.create();
+    var element = document.createElement('style');
+    element.setAttribute('type', 'text/css');
     to = to || document.getElementsByTagName('head')[0];
-    cssy.remove(to)
-    to.appendChild(el);
-    return el;
-  }
-
-  cssy.remove = function(from) {
-    from = from || document.getElementsByTagName('head')[0];
-    [].slice.apply(from.querySelectorAll("style[data-cssy-uid='"+uid+"']"))
-    .forEach(function(e) {
-      e.remove()
-    })
-  }
-
-  cssy.create = function() {
-    var el = document.createElement('style');
-    el.setAttribute('type', 'text/css');
-    el.setAttribute('data-cssy-uid', uid)
+    to.appendChild(element);
 
     function update(css) {
-      if (el.styleSheet) {
-        el.styleSheet.cssText = css;
+      if (element.styleSheet) {
+        element.styleSheet.cssText = css;
       } else {
-        el.textContent = css;
+        element.textContent = css;
       }
     }
 
+    function remove() {
+      cssy.offChange(listener);
+      element.remove();
+      imported.forEach(function(sub) {
+        sub.remove();
+      })
+    }
+
+    function listener(data) {
+      update(data.code)
+    }
+
+    // Initialize:
     update(css)
+    cssy.onChange(listener)
 
-    cssy.onChange(function(data) {
-      if(el.parentNode) update(data.code)
-    })
-
-    return el;
+    return {
+      element: element,
+      remove:  remove,
+      update:  update
+    }
   }
-
 
   cssy.onChange = function(listener) {
     cssyio && cssyio.on('change:' + uid, listener)
@@ -65,6 +61,9 @@ module.exports = function(css, uid, imports, cssyio) {
 
   cssy.src = css;
 
+  cssy.onChange(function(data) {
+    cssy.src = data.code;
+  })
 
   return cssy;
 }
