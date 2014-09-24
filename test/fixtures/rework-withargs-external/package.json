@@ -1,0 +1,3 @@
+{
+  "browserify": { "transform": [["cssy", { "plugins": [["rework-vars","./rework-vars.js"]] }]] }
+}

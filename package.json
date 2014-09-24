@@ -32,8 +32,10 @@
   },
   "devDependencies": {
     "expect.js": "*",
+    "jshint": "*",
     "mocha": "*",
-    "jshint": "*"
+    "rework-calc": "^1.1.0",
+    "rework-vars": "^3.1.1"
   },
   "browser": "./browser.js",
   "keywords": [
