@@ -4,6 +4,10 @@ var extend          = require('extend')
 
 var cssy = module.exports = require('./lib/transform.js');
 
+cssy.processor    = require('./lib/processor.js')
+
+cssy.attachServer = require('./lib/server.js')
+
 function init() {
   if(process.cssy) return;
 
@@ -25,7 +29,6 @@ function init() {
   process.cssy.config = getGlobalConfig() // Defaults
 }
 
-cssy.attachServer = require('./lib/server.js')
 
 cssy.reset = function() {
   delete process.cssy;
@@ -50,7 +53,7 @@ cssy.post = function(procs) {
   return cssy;
 }
 
-
+// Deprecated
 cssy.config = function(key, value) {
   init();
   if('object' == typeof(key)) {
