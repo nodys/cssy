@@ -1,4 +1,34 @@
 
+/**
+ * Create a cssy browser instance for one css source
+ *
+ * Used by browserify transform to expose an client api to a css source:
+ *
+ *    var myAppCss = require('./app.css');
+ *
+ *    // Insert source (default to document header):
+ *    myAppCss() // Shortcut for myAppCss.insert()
+ *
+ *    // Insert source in another node:
+ *    myAppCss(webShadowDocument)
+ *
+ *    // Get source:
+ *    console.log(myAppCss.getSource())
+ *
+ *    // Listen for changes (see cssy.attachServer()):
+ *    myAppCss.onChange(function(src) {
+ *      console.log('Source changed:',src)
+ *    })
+ *
+ *    // Control source object :
+ *    var ctrlSrc = myAppCss();
+ *    ctrlSrc.remove(); // Remove source
+ *    ctrlSrc.element;  // Inserted `style` element
+ *
+ * @param  {String} src     Css source
+ * @param  {Array} imports  List of imported cssy browser instances
+ * @return {Object}         [description]
+ */
 module.exports = function(src, imports) {
 
   var changeListeners = [];

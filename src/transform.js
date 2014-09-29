@@ -1,14 +1,19 @@
-var through2           = require('through2')
-var processor          = require('./processor')
-var pathResolve        = require('path').resolve
+var through2    = require('through2')
+var processor   = require('./processor')
+var pathResolve = require('path').resolve
 
+/**
+ * Browserify transform (see browsreify API)
+ */
 module.exports = function (filename) {
+
+  // Get cssy source processor
   var proc = processor(filename);
 
+  // If undefined, then ignore and pass through
   if(!proc) return through2();
 
   var code      = '';
-
   return through2(
     function (chunk, encoding, next) {
       code += chunk.toString();

@@ -10,6 +10,23 @@ var pathResolve     = require('path').resolve
 
 module.exports = processor;
 
+/**
+ * Provide a source processor for the given filename
+ *
+ * @param  {String} filename
+ *         File path of the source to process
+ *
+ * @return {Function}
+ *         An asynchronous processing function with two arguments: A css source
+ *         to process and a standard node callback (err, result)
+ *         This function return a cssy context object with:
+ *         - `filename` : the source filename
+ *         - `src` : the processed source
+ *         - `map` : the standard source map object
+ *         - `imports` : array of sources to import:
+ *            - `path`:  The path relative to the source
+ *            - `media`: The css media query
+ */
 function processor(filename) {
 
   if(!exists(filename)) return;
@@ -127,6 +144,12 @@ function processor(filename) {
   }
 }
 
+/**
+ * Basic css compressor (remove space and comments)
+ *
+ * @param  {Object} styles
+ *         A postcss ast
+ */
 function compress(styles) {
   styles.eachDecl(function(decl) {
     decl.before  = ""
@@ -149,7 +172,13 @@ function compress(styles) {
   styles.after = ""
 }
 
-
+/**
+ * Read a css import arguments: extract filepath and css media query
+ *
+ * @param {string} imp
+ *        The import arguments
+ *        (expl: `'./path/to.css' (min-width: 700px) and (orientation: landscape)` )
+ */
 function parseImport(imp) {
   var re = /^['"]?([^\s'"]+)['"]?\s*(.*)$/;
   var result = re.exec(imp);
@@ -159,6 +188,12 @@ function parseImport(imp) {
   }
 }
 
+/**
+ * Extract cssy configuration from a package.json object
+ *
+ * @param {Object} pkg
+ * @return {Object}
+ */
 function getCssyConfig(pkg) {
   if(!pkg.browserify || !pkg.browserify.transform) return;
   return pkg.browserify.transform.reduce(function(memo, item) {
