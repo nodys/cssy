@@ -1,5 +1,7 @@
 
-module.exports = function(css, uid, imports, cssyio) {
+module.exports = function(src, imports) {
+
+  var changeListeners = [];
 
   function cssy() {
     return cssy.insert.apply(null, arguments)
@@ -20,50 +22,56 @@ module.exports = function(css, uid, imports, cssyio) {
     to = to || document.getElementsByTagName('head')[0];
     to.appendChild(element);
 
-    function update(css) {
+    function update(src) {
       if (element.styleSheet) {
-        element.styleSheet.cssText = css;
+        element.styleSheet.cssText = src;
       } else {
-        element.textContent = css;
+        element.textContent = src;
       }
     }
 
     function remove() {
-      cssy.offChange(listener);
+      cssy.offChange(update);
       element.remove();
       imported.forEach(function(sub) {
         sub.remove();
       })
-    }
-
-    function listener(data) {
-      update(data.code)
+      return cssy;
     }
 
     // Initialize:
-    update(css)
-    cssy.onChange(listener)
+    update(cssy.getSource())
+    cssy.onChange(update)
 
     return {
       element: element,
-      remove:  remove,
-      update:  update
+      remove:  remove
     }
   }
 
+  cssy.getSource = function() {
+    return cssy.src;
+  }
+
+  cssy.update = function(src) {
+    cssy.src = src;
+    changeListeners.forEach(function(listener) {
+      listener(src);
+    })
+    return cssy;
+  }
+
   cssy.onChange = function(listener) {
-    cssyio && cssyio.on('change:' + uid, listener)
+    changeListeners.push(listener);
+    return cssy;
   }
 
   cssy.offChange = function(listener) {
-    cssyio && cssyio.off('change:' + uid, listener)
+    changeListeners = changeListeners.filter(function(l) { return l !== listener })
+    return cssy;
   }
 
-  cssy.src = css;
-
-  cssy.onChange(function(data) {
-    cssy.src = data.code;
-  })
+  cssy.src = src;
 
   return cssy;
 }

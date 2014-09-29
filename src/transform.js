@@ -1,14 +1,11 @@
 var through2           = require('through2')
 var processor          = require('./processor')
-var debug              = require('debug')('cssy:transform')
-var getGlobalConfig    = require('./utils').getGlobalConfig
+var pathResolve        = require('path').resolve
 
 module.exports = function (filename) {
   var proc = processor(filename);
 
   if(!proc) return through2();
-
-  debug('Transform', filename)
 
   var code      = '';
 
@@ -19,25 +16,23 @@ module.exports = function (filename) {
     },
     function (done) {
       var self     = this;
-      var debugcss = (process.cssy && process.cssy.config)
 
       proc(code, function(err, result) {
         if(err) return done(err);
-
-        var uid      = result.uid
-        var source   = result.css
 
         var imports  = result.imports.map(function(imp) {
           return '{ cssy: require("'+imp.path+'"), media:"'+imp.media+'"}';
         }).join(',')
 
-        var args = JSON.stringify(source) + ", '" + uid + "', ["+imports+"]";
+        var browserPath = pathResolve(__dirname, './cssy-browser.js')
+        var cssyioPath  = pathResolve(__dirname, './cssyio.js')
 
-        if(getGlobalConfig().livereload) {
-          args += ",require('cssy/cssyio')"
+        self.push("module.exports = (require('"+browserPath+"'))(" + JSON.stringify(result.src) + ", ["+imports+"]" + ");");
+
+        if(process.cssy.config.livereload) {
+          self.push("\nrequire('"+cssyioPath+"').on('change:"+result.filename+"', function(src) { module.exports.update(src)})");
         }
 
-        self.push("module.exports = (require('cssy/browser'))(" + args + ")");
         done();
       })
 
