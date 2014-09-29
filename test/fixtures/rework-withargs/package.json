@@ -1,3 +1,0 @@
-{
-  "browserify": { "transform": [["cssy", { "plugins": [["rework-vars",{"map": {"--fontsize": "14px"}}]] }]] }
-}

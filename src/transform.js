@@ -1,6 +1,8 @@
-var through2    = require('through2')
-var processor   = require('./processor')
-var pathResolve = require('path').resolve
+var through2     = require('through2')
+var processor    = require('./processor')
+var pathResolve  = require('path').resolve
+var pathRelative = require('path').relative
+var dirname      = require('path').dirname
 
 /**
  * Browserify transform (see browsreify API)
@@ -29,8 +31,8 @@ module.exports = function (filename) {
           return '{ cssy: require("'+imp.path+'"), media:"'+imp.media+'"}';
         }).join(',')
 
-        var browserPath = pathResolve(__dirname, './cssy-browser.js')
-        var cssyioPath  = pathResolve(__dirname, './cssyio.js')
+        var browserPath = pathRelative(dirname(filename), pathResolve(__dirname, './cssy-browser.js'))
+        var cssyioPath  = pathRelative(dirname(filename), pathResolve(__dirname, './cssyio.js'))
 
         self.push("module.exports = (require('"+browserPath+"'))(" + JSON.stringify(result.src) + ", ["+imports+"]" + ");");
 

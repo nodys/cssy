@@ -1,3 +1,0 @@
-{
-  "browserify": { "transform": [["cssy", { "plugins": ["rework-calc"] }]] }
-}

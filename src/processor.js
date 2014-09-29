@@ -46,7 +46,6 @@ function processor(filename) {
     config.match = [config.match]
   }
 
-  config.plugins   = config.plugins || [];
   if(!(RegExp.apply(null, config.match)).test(filename)) {
     return;
   }

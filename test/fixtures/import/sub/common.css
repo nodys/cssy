@@ -1,0 +1,8 @@
+
+:root {
+  --fsize: calc(14px * 1);
+}
+
+body {
+  font-size: var(--fsize);
+}

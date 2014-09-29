@@ -30,9 +30,14 @@
     "through2": "^1.1.1"
   },
   "devDependencies": {
+    "browserify": "^5.12.1",
     "expect.js": "*",
+    "jsdom": "^1.0.0",
     "jshint": "*",
     "mocha": "*",
+    "postcss-calc": "^2.0.1",
+    "postcss-custom-properties": "^0.3.1",
+    "rework": "^1.0.1",
     "rework-calc": "^1.1.0",
     "rework-vars": "^3.1.1"
   },

@@ -2,9 +2,9 @@
 
 var expect           = require('expect.js')
 var join             = require('path').join
-var cssy             = require('../index.js')
-var processor        = require('../lib/processor')
-var transform        = require('../lib/transform')
+var cssy             = require('..')
+var processor        = cssy.processor
+var transform        = cssy.transform
 var read             = require('fs').readFileSync
 var createReadStream = require('fs').createReadStream
 var concatStream     = require('concat-stream')
@@ -14,6 +14,11 @@ function fixp(filename) {
 }
 
 describe('cssy', function(){
+
+  beforeEach(function() {
+    cssy.reset();
+  })
+
   describe('processor', function() {
 
     it('should return a function if source is valid', function() {
@@ -46,46 +51,22 @@ describe('cssy', function(){
       proc(source, function(err, result) {
         if(err) return done(err);
         expect(result).to.be.a('object')
-        expect(result).to.have.keys(['imports', 'uid', 'toString'])
-        expect(result.toString()).to.eql("body {\n  font-size: 14px;\n}")
+        expect(result).to.have.keys(['imports', 'src', 'map'])
+        expect(result.src).to.eql("body{font-size:14px;}")
         done()
       })
 
-
     })
 
-    describe('with rework plugin', function() {
-      it('should apply rework plugin', function(done) {
-        var filename = fixp('rework/source.css');
+    describe('with source processor', function() {
+
+      it('should work with a processor defined in package.json', function(done) {
+        var filename = fixp('processor/source.css');
         var source   = read(filename).toString();
         var proc     = processor(filename);
         proc(source, function(err, result) {
           if(err) return done(err);
-          expect(result.toString()).to.eql("body {\n  font-size: 14px;\n}")
-          done()
-        })
-
-      })
-
-      it('should apply rework plugin with arguments', function(done) {
-        var filename = fixp('rework-withargs/source.css');
-        var source   = read(filename).toString();
-        var proc     = processor(filename);
-        proc(source, function(err, result) {
-          if(err) return done(err);
-          expect(result.toString()).to.eql("body {\n  font-size: 14px;\n}")
-          done()
-        })
-
-      })
-
-      it('should apply rework plugin with arguments from external module', function(done) {
-        var filename = fixp('rework-withargs-external/source.css');
-        var source   = read(filename).toString();
-        var proc     = processor(filename);
-        proc(source, function(err, result) {
-          if(err) return done(err);
-          expect(result.toString()).to.eql("body {\n  font-size: 14px;\n}")
+          expect(result.src).to.eql("body{font-size:14px;}")
           done()
         })
       })
@@ -93,32 +74,28 @@ describe('cssy', function(){
 
     describe('with global pre/post processor', function() {
 
-      afterEach(function() {
-        cssy.reset();
-      })
-
       it('should run pre-process as waterfall', function(done) {
+        var steps = [];
 
         cssy.pre([
-          function(rw, done) {
-            rw._test = [];
-            rw._test.push('pre1')
-            done(null, rw);
+          function(ctx, done) {
+            steps.push('pre1')
+            done(null, ctx);
           },
-          function(rw, done) {
-            rw._test.push('pre2')
-            done(null, rw);
+          function(ctx, done) {
+            steps.push('pre2')
+            done(null, ctx);
           },
         ])
 
         cssy.post([
-          function(rw, done) {
-            rw._test.push('post1')
-            done(null, rw);
+          function(ctx, done) {
+            steps.push('post1')
+            done(null, ctx);
           },
-          function(rw, done) {
-            rw._test.push('post2')
-            done(null, rw);
+          function(ctx, done) {
+            steps.push('post2')
+            done(null, ctx);
           }
         ])
 
@@ -127,11 +104,9 @@ describe('cssy', function(){
         var proc     = processor(filename);
         proc(source, function(err, result) {
           if(err) return done(err);
-          expect(result._test).to.eql(['pre1','pre2', 'post1', 'post2'])
+          expect(steps).to.eql(['pre1','pre2', 'post1', 'post2'])
           done()
         })
-
-
       })
     })
 
@@ -150,27 +125,45 @@ describe('cssy', function(){
     })
 
     it('should process a css source', function(done) {
-      var filename = fixp('rework/source.css');
+      var filename = fixp('basic/source.css');
       createReadStream(filename)
       .pipe(transform(filename))
       .pipe(concatStream(function(result) {
-        expect(result.toString())
-          .to.eql("module.exports = (require('cssy/browser'))(\"body{font-size:14px;}\", '986287257254767c753a0e9ca2097afb', [])")
+        var src = result.toString();
+        expect(src).to.contain('module.exports')
+        expect(src).to.contain('require(\'../../../src/cssy-browser.js\')')
+        expect(src).to.contain('body{font-size:14px;}')
         done();
       }))
     })
 
-    it('should process a css source', function(done) {
-      var filename = fixp('rework/source.css');
+    it('should add cssyio if livereload is enabled', function(done) {
+      var filename = fixp('basic/source.css');
+      cssy.config('livereload', true);
       createReadStream(filename)
       .pipe(transform(filename))
       .pipe(concatStream(function(result) {
-        expect(result.toString())
-          .to.eql("module.exports = (require('cssy/browser'))(\"body{font-size:14px;}\", '986287257254767c753a0e9ca2097afb', [])")
+        var src = result.toString();
+        expect(src).to.contain('module.exports')
+        expect(src).to.contain('require(\'../../../src/cssyio.js\')')
+        expect(src).to.contain('change:test/fixtures/basic/source.css')
         done();
       }))
     })
-
-
   })
+
+  describe('@import', function() {
+    it('processor should extract import from sources', function(done) {
+      var filename = fixp('import/source.css');
+      var source   = read(filename).toString();
+      var proc     = processor(filename);
+      proc(source, function(err, result) {
+        if(err) return done(err);
+        expect(result.src).to.eql("body{font-size:14px;}")
+        expect(result.imports).to.eql([ { path: './sub/common.css', media: 'screen' } ])
+        done()
+      })
+    })
+  })
+
 })
