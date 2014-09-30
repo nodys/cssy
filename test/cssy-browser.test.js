@@ -21,26 +21,39 @@ describe('cssy browser', function(){
     cssy.reset();
   })
 
-  describe.only('require css in commonjs source', function() {
+  describe('require css in commonjs source', function() {
 
-    describe('.insert()', function() {
-      it('should insert processed sources with right media query', function(done) {
-        var b = browserify(fixp('browser/app.js'))
-        b.bundle().pipe(concatStream(function(result) {
-          var bundle = result.toString();
-          jsdom.env({
-            'html': '<head></head><body></body>',
-            'src' : [bundle],
-            'done': function(error, window) {
-              var result = window.document.documentElement.outerHTML;
-              expect(result).to.contain('<style type="text/css" media="screen">body{background-color:#663399}</style>')
-              expect(result).to.contain('<style type="text/css">body{font-size:14px;}</style>')
-              done();
-            }
-          })
-        }))
-      })
+    it('@import should import processed sources with right media query', function(done) {
+      var b = browserify(fixp('browser/import.js'))
+      b.bundle().pipe(concatStream(function(result) {
+        var bundle = result.toString();
+        jsdom.env({
+          'html': '<head></head><body></body>',
+          'src' : [bundle],
+          'done': function(error, window) {
+            var result = window.document.documentElement.outerHTML;
+            expect(result).to.contain('<style type="text/css" media="screen">body{background-color:#663399}</style>')
+            expect(result).to.contain('<style type="text/css">body{font-size:14px;}</style>')
+            done();
+          }
+        })
+      }))
+    })
 
+    it.only('@import should work with npm package without cssy transform', function(done) {
+      var b = browserify(fixp('browser/nocssy.js'))
+      b.bundle().pipe(concatStream(function(result) {
+        var bundle = result.toString();
+        jsdom.env({
+          'html': '<head></head><body></body>',
+          'src' : [bundle],
+          'done': function(error, window) {
+            var result = window.document.documentElement.outerHTML;
+            expect(result).to.contain('<style type="text/css" media="screen">body{background-color:#663399}</style>')
+            done();
+          }
+        })
+      }))
     })
 
   })
