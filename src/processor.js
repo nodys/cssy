@@ -6,6 +6,7 @@ var exists          = require('fs').existsSync
 var async           = require('async')
 var postcss         = require('postcss')
 var pathResolve     = require('path').resolve
+var readFileSync    = require('fs').readFileSync
 
 
 module.exports = getProcessor;
@@ -126,8 +127,7 @@ function getProcessor(filename) {
               ctx.imports.push(imp);
               atRule.removeSelf()
             } else {
-              // Fallback ??
-              // console.log('fallback', impAbsPath, getProcessor(impAbsPath))
+              // Fallback to inline source import ? (TODO: find a better solution)
             }
           })
 

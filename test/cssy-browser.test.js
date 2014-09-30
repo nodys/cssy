@@ -21,41 +21,107 @@ describe('cssy browser', function(){
     cssy.reset();
   })
 
-  describe('require css in commonjs source', function() {
+  function readJsdomError(errors) {
+    var msg = errors.reduce(function(memo, item) {
+      return memo += item.type + ' ' + item.message + ':\n  ' + item.data.error.message
+    }, '')
+    return new Error(msg);
+  }
 
-    it('@import should import processed sources with right media query', function(done) {
-      var b = browserify(fixp('browser/import.js'))
-      b.bundle().pipe(concatStream(function(result) {
-        var bundle = result.toString();
-        jsdom.env({
-          'html': '<head></head><body></body>',
-          'src' : [bundle],
-          'done': function(error, window) {
-            var result = window.document.documentElement.outerHTML;
-            expect(result).to.contain('<style type="text/css" media="screen">body{background-color:#663399}</style>')
-            expect(result).to.contain('<style type="text/css">body{font-size:14px;}</style>')
-            done();
+  function simu(fixturePath, callback) {
+    var srcPath  = fixp(fixturePath) + '/index.js';
+    var html     = read(fixp(fixturePath) + '/index.html');
+
+    browserify(srcPath).bundle().pipe(concatStream(function(result) {
+      var bundle = result.toString();
+      jsdom.env({
+        'html': html,
+        'src' : [bundle],
+        'done': function(errors, window) {
+          if(errors && errors.length)  {
+            return callback(readJsdomError(errors));
           }
-        })
-      }))
-    })
+          callback(null, window)
+        }
+      })
+    }))
+  }
 
-    it.only('@import should work with npm package without cssy transform', function(done) {
-      var b = browserify(fixp('browser/nocssy.js'))
-      b.bundle().pipe(concatStream(function(result) {
-        var bundle = result.toString();
-        jsdom.env({
-          'html': '<head></head><body></body>',
-          'src' : [bundle],
-          'done': function(error, window) {
-            var result = window.document.documentElement.outerHTML;
-            expect(result).to.contain('<style type="text/css" media="screen">body{background-color:#663399}</style>')
-            done();
+  function auto(fixturePath) {
+    var expected = read(fixp(fixturePath) + '/expected.html').toString().trim().replace(/\n/g,'');;
+    return function(done) {
+      simu(fixturePath, function(err, window) {
+        var result = window.document.documentElement.outerHTML.trim().replace(/\n/g,'');
+        expect(result).to.eql(expected)
+        done();
+      })
+    }
+  }
+
+  it('.insert() should insert style in the given node',
+    auto('browser/insert'))
+
+  it('@import should import sources with media query attribute',
+    auto('browser/import'))
+
+  it('.remove() should remove sources and imported sources',
+    auto('browser/remove'))
+
+  it('.update() should update sources',
+    auto('browser/update'))
+
+  it('.toString() should return css source (implicit toString())',
+    auto('browser/tostring'))
+
+  it('If enabled, style must listening for cssy livereload web socket', function(done) {
+    cssy.config('livereload', true)
+    var fixturePath = 'browser/livereload';
+    var srcPath     = fixp(fixturePath) + '/index.js';
+    var html        = read(fixp(fixturePath) + '/index.html');
+    var expected    = read(fixp(fixturePath) + '/expected.html').toString().trim().replace(/\n/g,'');;
+    var socket;
+
+    browserify(srcPath).bundle().pipe(concatStream(function(result) {
+      var bundle = result.toString();
+      jsdom.env({
+        'html': html,
+        'src' : [bundle],
+        'created': function(errors, window) {
+          if(errors && errors.length)  return done(readJsdomError(errors));
+
+          // Mock XMLHttpRequest for lrio
+          window.XMLHttpRequest = function() {
+            var self = this;
+            self.readyState = 2;
+            self.getResponseHeader = function() {return 'enabled'}
+            self.open = function() {}
+            self.send = function() {
+              self.onreadystatechange()
+            }
           }
-        })
-      }))
-    })
+          // Mock WebSocket for lrio
+          window.WebSocket = function() { socket = this }
 
+        },
+        'done': function(errors, window) {
+          if(errors && errors.length)  return done(readJsdomError(errors));
+
+          // Simulate a change event :
+          socket.onmessage({
+            data: JSON.stringify({
+              type: 'change',
+              uid:  'test/fixtures/browser/livereload/index.css',
+              src:  'body{font-size:42px;}'
+            })
+          })
+
+          var result = window.document.documentElement.outerHTML.trim().replace(/\n/g,'');
+          expect(result).to.eql(expected)
+          done();
+        }
+      })
+    }))
   })
+
 
 })

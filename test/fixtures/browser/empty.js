@@ -1,1 +1,0 @@
-require('./empty.css')

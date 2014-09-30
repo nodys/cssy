@@ -62,7 +62,9 @@ module.exports = function(src, imports) {
 
     function remove() {
       cssy.offChange(update);
-      element.remove();
+      try {
+        element.parentNode.removeChild(element);
+      } catch(e) {}
       imported.forEach(function(sub) {
         sub.remove();
       })
@@ -74,8 +76,9 @@ module.exports = function(src, imports) {
     cssy.onChange(update)
 
     return {
-      element: element,
-      remove:  remove
+      element:  element,
+      imported: imported,
+      remove:   remove
     }
   }
 
