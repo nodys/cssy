@@ -7,6 +7,7 @@ var async           = require('async')
 var postcss         = require('postcss')
 var pathResolve     = require('path').resolve
 var readFileSync    = require('fs').readFileSync
+var csswring        = require('csswring')
 
 
 module.exports = getProcessor;
@@ -135,7 +136,7 @@ function getProcessor(filename) {
 
         // Compress
         if(process.cssy.config.compress) {
-          compress(styles)
+          csswring.postcss(styles)
         }
 
         // Source map
@@ -153,34 +154,6 @@ function getProcessor(filename) {
   }
 
   return processor;
-}
-
-/**
- * Basic css compressor (remove space and comments)
- *
- * @param  {Object} styles
- *         A postcss ast
- */
-function compress(styles) {
-  styles.eachDecl(function(decl) {
-    decl.before  = ""
-    decl.between = ":"
-  })
-  styles.eachRule(function(rule) {
-    rule.before  = ""
-    rule.between = ""
-    rule.after   = ""
-  })
-  styles.eachAtRule(function(atRule) {
-    atRule.before  = ""
-    atRule.between = ""
-    atRule.after   = ""
-  })
-  styles.eachComment(function(comment) {
-    comment.removeSelf()
-  })
-  styles.before = ""
-  styles.after = ""
 }
 
 /**
