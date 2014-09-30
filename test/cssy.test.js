@@ -2,7 +2,7 @@
 
 var expect           = require('expect.js')
 var join             = require('path').join
-var cssy             = require('..')
+var cssy             = (process.env.COVERAGE ? require('../src-cov/cssy.js') : require('../src/cssy.js'))
 var processor        = cssy.processor
 var transform        = cssy.transform
 var read             = require('fs').readFileSync
@@ -40,8 +40,13 @@ describe('cssy', function(){
     })
 
     it('should use `match` option to filter acceptable source (override regex for .css)', function() {
-      expect(processor(fixp('filter/me.mycss'))).to.be.a('function')
-      expect(processor(fixp('filter/notme.css'))).to.be(undefined)
+      expect(processor(fixp('filter-simple/me.mycss'))).to.be.a('function')
+      expect(processor(fixp('filter-simple/notme.css'))).to.be(undefined)
+    })
+
+    it('should use `match` option to filter acceptable source (override regex for .css) with regex flags', function() {
+      expect(processor(fixp('filter-flags/me.mycss'))).to.be.a('function')
+      expect(processor(fixp('filter-flags/notme.css'))).to.be(undefined)
     })
 
     it('should process a css source', function(done) {
@@ -52,11 +57,27 @@ describe('cssy', function(){
         if(err) return done(err);
         expect(result).to.be.a('object')
         expect(result).to.have.keys(['imports', 'src', 'map'])
-        expect(result.src).to.eql("body{font-size:14px;}")
+        expect(result.src).to.eql("body{font-size:14px}")
         done()
       })
 
     })
+
+    it('should provide a sourcemap if enable', function(done) {
+      cssy.config({sourcemap:true})
+      var filename = fixp('basic/source.css');
+      var source   = read(filename).toString();
+      var proc     = processor(filename);
+      proc(source, function(err, result) {
+        if(err) return done(err);
+        expect(result.src).to.contain("body{font-size:14px}")
+        expect(result.src).to.contain("/*# sourceMappingURL=data:application/json;base64,")
+        expect(result.src).to.contain("/*# sourceURL=test/fixtures/basic/source.css.output")
+        done()
+      })
+
+    })
+
 
     describe('with source processor', function() {
 
@@ -66,7 +87,7 @@ describe('cssy', function(){
         var proc     = processor(filename);
         proc(source, function(err, result) {
           if(err) return done(err);
-          expect(result.src).to.eql("body{font-size:14px;}")
+          expect(result.src).to.eql("body{font-size:14px}")
           done()
         })
       })
@@ -132,7 +153,7 @@ describe('cssy', function(){
         var src = result.toString();
         expect(src).to.contain('module.exports')
         expect(src).to.contain('require(\'../../../src/cssy-browser.js\')')
-        expect(src).to.contain('body{font-size:14px;}')
+        expect(src).to.contain('body{font-size:14px}')
         done();
       }))
     })
@@ -159,7 +180,7 @@ describe('cssy', function(){
       var proc     = processor(filename);
       proc(source, function(err, result) {
         if(err) return done(err);
-        expect(result.src).to.eql("body{font-size:14px;}")
+        expect(result.src).to.eql("body{font-size:14px}")
         expect(result.imports).to.eql([ { path: './sub/common.css', media: 'screen' } ])
         done()
       })

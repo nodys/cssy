@@ -2,7 +2,7 @@
 
 var expect           = require('expect.js')
 var join             = require('path').join
-var cssy             = require('..')
+var cssy             = (process.env.COVERAGE ? require('../src-cov/cssy.js') : require('../src/cssy.js'))
 var processor        = cssy.processor
 var transform        = cssy.transform
 var read             = require('fs').readFileSync
@@ -111,7 +111,7 @@ describe('cssy browser', function(){
             data: JSON.stringify({
               type: 'change',
               uid:  'test/fixtures/browser/livereload/index.css',
-              src:  'body{font-size:42px;}'
+              src:  'body{font-size:42px}'
             })
           })
 

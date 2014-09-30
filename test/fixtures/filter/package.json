@@ -1,3 +1,0 @@
-{
-  "browserify": { "transform": [ ["cssy", {"match": ["\\.mycss$","i"]} ] ] }
-}

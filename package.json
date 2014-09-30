@@ -1,6 +1,6 @@
 {
   "name": "cssy",
-  "description": "A(nother) css injector for browserify",
+  "description": "A(nother) browserify transform for css sources (with vitamines)",
   "version": "0.0.0",
   "author": "Jean Ponchon <jean.ponchon@novadiscovery.com>",
   "repository": {
@@ -46,7 +46,10 @@
   "keywords": [
     "css",
     "browserify",
-    "browserify-transform"
+    "browserify-transform",
+    "livereload",
+    "browser",
+    "webcomponent"
   ],
   "publishConfig": {
     "registry": "http://registry.npmjs.org/"
