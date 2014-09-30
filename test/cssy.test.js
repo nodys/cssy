@@ -171,6 +171,18 @@ describe('cssy', function(){
         done();
       }))
     })
+
+    it('should add imported cssy instance to transformed source', function(done) {
+      var filename = fixp('import/source.css');
+      createReadStream(filename)
+      .pipe(transform(filename))
+      .pipe(concatStream(function(result) {
+        var src = result.toString();
+        expect(src).to.contain('[{ cssy: require("./sub/common.css"), media:"screen"}]')
+        done();
+      }))
+    })
+
   })
 
   describe('@import', function() {
@@ -184,6 +196,43 @@ describe('cssy', function(){
         expect(result.imports).to.eql([ { path: './sub/common.css', media: 'screen' } ])
         done()
       })
+    })
+  })
+
+  describe('.attachServer()', function() {
+    it('should attach a lrio server and send transformed source to client', function(done) {
+
+      // Mock http server:
+      var mockServer = {on:function() {}};
+
+      // Attach cssy
+      var cssylr = cssy.attachServer(mockServer)
+
+      // Mock lrioServer broadcast method:
+      cssylr.lrioServer.broadcast = function(type, uid, src) {
+        expect(type).to.eql('change')
+        expect(uid).to.eql('test/fixtures/import/source.css')
+        expect(src).to.contain('font-size: 14px;')
+        // Default configuration, with livereload server attached
+        // is to disable compress and to add sourcemap
+        expect(src).to.contain('sourceMappingURL')
+        done();
+      }
+
+      // Trigger change on a file
+      cssylr(fixp('import/source.css'));
+
+
+
+      // var filename = fixp('import/source.css');
+      // var source   = read(filename).toString();
+      // var proc     = processor(filename);
+      // proc(source, function(err, result) {
+      //   if(err) return done(err);
+      //   expect(result.src).to.eql("body{font-size:14px}")
+      //   expect(result.imports).to.eql([ { path: './sub/common.css', media: 'screen' } ])
+      //   done()
+      // })
     })
   })
 

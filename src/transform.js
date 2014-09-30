@@ -46,5 +46,4 @@ module.exports = function (filename) {
     }
   );
 
-  return compiler;
 }

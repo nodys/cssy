@@ -81,7 +81,7 @@ cssy.attachServer = function(server) {
     livereload: true
   });
 
-  return function (filename) {
+  function change(filename) {
     var proc = processor(filename);
     if(!proc) return;
     createReadStream(filename)
@@ -91,6 +91,10 @@ cssy.attachServer = function(server) {
       })
     }))
   }
+
+  change.lrioServer = lrioServer;
+
+  return change;
 }
 
 
