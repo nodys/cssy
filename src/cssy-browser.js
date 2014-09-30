@@ -13,7 +13,7 @@
  *    myAppCss(webShadowDocument)
  *
  *    // Get source:
- *    console.log(myAppCss.getSource())
+ *    console.log(myAppCss.toString())
  *
  *    // Listen for changes (see cssy.attachServer()):
  *    myAppCss.onChange(function(src) {
@@ -70,7 +70,7 @@ module.exports = function(src, imports) {
     }
 
     // Initialize:
-    update(cssy.getSource())
+    update(cssy.toString())
     cssy.onChange(update)
 
     return {
@@ -79,7 +79,7 @@ module.exports = function(src, imports) {
     }
   }
 
-  cssy.getSource = function() {
+  cssy.toString = function() {
     return cssy.src;
   }
 
