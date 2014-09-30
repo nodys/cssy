@@ -8,7 +8,7 @@ var postcss         = require('postcss')
 var pathResolve     = require('path').resolve
 
 
-module.exports = processor;
+module.exports = getProcessor;
 
 /**
  * Provide a source processor for the given filename
@@ -27,7 +27,7 @@ module.exports = processor;
  *            - `path`:  The path relative to the source
  *            - `media`: The css media query
  */
-function processor(filename) {
+function getProcessor(filename) {
 
   if(!exists(filename)) return;
 
@@ -50,7 +50,7 @@ function processor(filename) {
     return;
   }
 
-  return function(src, done) {
+  function processor(src, done) {
 
 
     // Transform source
@@ -117,10 +117,20 @@ function processor(filename) {
         if(!ctx.config.noImport) {
           styles.eachAtRule(function (atRule) {
             if (atRule.name !== "import")  return;
-            if(/^url\(|:\/\//.test(atRule.params)) return;
-            ctx.imports.push(parseImport(atRule.params));
-            atRule.removeSelf()
+            if(/^url\(|:\/\//.test(atRule.params)) return; // Absolute
+            var imp = parseImport(atRule.params);
+            var impAbsPath = resolve.sync(imp.path, {basedir:dirname(filename)});
+            // Check for cssy transform
+            var pkgPath = relativePackage(impAbsPath)
+            if(pkgPath && getCssyConfig(require(pkgPath))) {
+              ctx.imports.push(imp);
+              atRule.removeSelf()
+            } else {
+              // Fallback ??
+              // console.log('fallback', impAbsPath, getProcessor(impAbsPath))
+            }
           })
+
         }
 
         // Compress
@@ -141,6 +151,8 @@ function processor(filename) {
     ], done)
 
   }
+
+  return processor;
 }
 
 /**
