@@ -37,18 +37,18 @@ module.exports = function(src, imports) {
     return cssy.insert.apply(null, arguments)
   }
 
-  cssy.insert = function(to) {
+  cssy.insert = function(to, media) {
 
     var imported = imports.map(function(imp) {
-      var sub = imp.cssy(to);
-      if(imp.media) {
-        sub.element.setAttribute('media', imp.media)
-      }
+      var sub = imp.cssy(to, imp.media);
       return sub;
     })
 
     var element = document.createElement('style');
     element.setAttribute('type', 'text/css');
+    if(media) {
+      element.setAttribute('media', media)
+    }
     to = to || document.getElementsByTagName('head')[0];
     to.appendChild(element);
 
