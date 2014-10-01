@@ -87,7 +87,7 @@ cssy.attachServer = function(server) {
     createReadStream(filename)
     .pipe(concatStream(function(source) {
       proc(source.toString(), function(err, result) {
-        lrioServer.broadcast('change', result.filename, result.src)
+        lrioServer.broadcast({type:'change', uid: result.filename, src: result.src})
       })
     }))
   }

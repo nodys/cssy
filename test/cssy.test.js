@@ -209,30 +209,19 @@ describe('cssy', function(){
       var cssylr = cssy.attachServer(mockServer)
 
       // Mock lrioServer broadcast method:
-      cssylr.lrioServer.broadcast = function(type, uid, src) {
-        expect(type).to.eql('change')
-        expect(uid).to.eql('test/fixtures/import/source.css')
-        expect(src).to.contain('font-size: 14px;')
+      cssylr.lrioServer.broadcast = function(data) {
+        expect(data.type).to.eql('change')
+        expect(data.uid).to.eql('test/fixtures/import/source.css')
+        expect(data.src).to.contain('font-size: 14px;')
         // Default configuration, with livereload server attached
         // is to disable compress and to add sourcemap
-        expect(src).to.contain('sourceMappingURL')
+        expect(data.src).to.contain('sourceMappingURL')
         done();
       }
 
       // Trigger change on a file
       cssylr(fixp('import/source.css'));
 
-
-
-      // var filename = fixp('import/source.css');
-      // var source   = read(filename).toString();
-      // var proc     = processor(filename);
-      // proc(source, function(err, result) {
-      //   if(err) return done(err);
-      //   expect(result.src).to.eql("body{font-size:14px}")
-      //   expect(result.imports).to.eql([ { path: './sub/common.css', media: 'screen' } ])
-      //   done()
-      // })
     })
   })
 
