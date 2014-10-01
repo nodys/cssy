@@ -1,6 +1,6 @@
 {
   "name": "cssy",
-  "description": "A(nother) browserify transform for css sources (with vitamines)",
+  "description": "A browserify transform for css (with vitamines)",
   "version": "0.0.0",
   "author": "Jean Ponchon <jean.ponchon@novadiscovery.com>",
   "repository": {
