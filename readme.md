@@ -1,25 +1,28 @@
-# cssy
-[![Build Status](https://secure.travis-ci.org/nopnop/cssy.png?branch=master)](http://travis-ci.org/nopnop/cssy) [![NPM version](https://badge-me.herokuapp.com/api/npm/cssy.png)](http://badges.enytc.com/for/npm/cssy)
+# cssy [![Build Status](https://secure.travis-ci.org/nopnop/cssy.png?branch=master)](http://travis-ci.org/nopnop/cssy) [![NPM version](https://badge-me.herokuapp.com/api/npm/cssy.png)](http://badges.enytc.com/for/npm/cssy)
 
 > A browserify transform for css (with vitamins): Use css sources **like any other module** but **without forgo** the benefits of **pre-processing** and **live source reload**.
 
+```javascript
+var myCss = require('foo/my.css')
+myCss()                           // Inject the css in document
+myCss(elsewhere)                  // To inject css elsewhere
+myCss(elsewhere, 'tv')            // Media query...
+myCss.update('h1 { }')            // Update source for all injected instances
+myCss.onChange(function(css) { }) // Watch for change (hey, you like live source reload ?)
+console.log('Source: %s', myCss)  // Use as a string
+```
 
 ## Features
 
 - **Require css as any other commonjs module**: `require('foo/common.css')`.
 - **Pre/post processing**: Cssy is framework-agnostic:
   - Use any  [post/pre-processor](https://developer.chrome.com/devtools/docs/css-preprocessors) you like ([rework](https://github.com/reworkcss/rework), [postcss](https://github.com/postcss/postcss),  [less](http://lesscss.org/), [sass](http://sass-lang.com/), etc.)
-  - At package level, you encapsulate your *css secret cooking* and export only css.
-  - At application level you can do **global processing** things like global `url()` rebasing.
-- **A nice API to read, insert, update or remove**: Use the exported css wherever you want and as you like:
-  - `require('foo/bar.css')` To get the source when used as a string value (thanks to [toString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/toString))
-  - `require('foo/bar.css')()` To insert the css in document's head
-  - `require('foo/bar.css')(elsewhere)` To insert elsewhere (why not a [shadow root](http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom-201/) for instance...)
-  - `require('foo/bar.css')(el, '(max-width: 600px)')` With [CSS media-query](https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Media_queries) ...
-  - `require('foo/bar.css').update('.button { ... }')` To update **all** the inserted instance.  
-- **@import**: If enabled, the css at-rule [@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import) works like a `require()` of another css module.
+  - At package level, you encapsulate your *css secret cooking* and export only standard css.
+  - At application level you can do **global processing** for things like global `url()` rebasing.
+- **A nice API to read, insert, update or remove**: Use the exported css wherever you want and as you like.
+- **@import**: If enabled, the css at-rule [@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import) `require()` and inject another css module for you.
 - **Source map**: If enabled, cssy inject a [source map](https://developer.chrome.com/devtools/docs/css-preprocessors).
-- **Live source reload**: Provide a simple http(s) server hook to live reload source in development environnement.
+- **Live source reload**: Provide a simple http(s) server hook reload seamlessly css source in development environnement.
 - **Regex filter**: Configurable, you can apply cssy's transform selectively (usefull to handle pre-transformed source like sass, less, styl, etc.)
 
 Want a nice cocktail recipe ? Use **source map** in combination with cssy's **live source reload feature** and chrome's [in-browser edition](https://developer.chrome.com/devtools/docs/workspaces).
@@ -30,46 +33,8 @@ Want a nice cocktail recipe ? Use **source map** in combination with cssy's **li
 ```bash
 npm install --save cssy
 ```
-Then add cssy to your [browserify transform field](https://github.com/substack/node-browserify#browserifytransform).
 
-
-## Overview
-
-```javascript
-
-var myCss = require('./my.css');
-
-// Read source
-console.log('Source: %s', myCss); //
-
-// Insert css source in the document headers:
-myCss(); // Shortcut for myCss.insert([element,[media query]])
-
-// Insert css source into another node:
-var el = document.createElement('template')
-myCss(el);
-
-// Insert css source with a media query:
-myCss(null,'(max-width: 800px)');
-
-// Change css source:
-myCss.update('body { ... }');
-
-// Remove
-var c = myCss();
-c.remove();
-
-// Watch for changes:
-//   When .update() is called by you or by the cssy's
-//   live-reload server (if enabled)
-myCss.onChange(function() { })
-
-```
-
-
-## Usage
-
-**Add cssy transform to your `package.json`**. Encapsulate your css processing logic inside your package: use [browserify.transform field](https://github.com/substack/browserify-handbook#browserifytransform-field).
+**Then add cssy transform to your `package.json`**. Encapsulate your css processing logic inside your package: use [browserify.transform field](https://github.com/substack/browserify-handbook#browserifytransform-field).
 
 ```javascript
 {
@@ -82,11 +47,13 @@ myCss.onChange(function() { })
 }
 ```
 
-### Cssy options
+## Cssy options
 
-- `processor` **{String}**: Path to a [Css processor](#css-processor)
+In you `package.json` you can add some options for the current package (`[ "cssy", {  /* options */ } ]`)
+
+- `processor` **{String}**: Path to a [Css processor](#cssy-processor)
 - `noImport` **{Boolean}**: Prevent [@import](#import-css) behavior
-- `match` **{String|Array}**: Filter which file cssy must handle. See [Regex filter](#Regex filter)
+- `match` **{String|Array}**: Filter which file cssy must handle. See [Regex filter](#regex-filter)
 
 
 ## Cssy processor
@@ -223,7 +190,7 @@ require('chokidar')
 
 ## Import css
 
-Unless you set the [noImport option](#Cssy options) to false, `@import` [at-rules](https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule) works like a `require()`.
+Unless you set the [noImport option](#cssy-options) to false, `@import` [at-rules](https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule) works like a `require()`.
 
 For instance with two css file, `app.css` and `print.css`:
 
@@ -242,7 +209,7 @@ When you inject `app.css`, `print.css` will be injected too with the media query
 
 ## Regex filter
 
-You can set the [match option](#Cssy options) to filter which file cssy must handle. Default filter is all css files: `/\.css$/i`.
+You can set the [match option](#cssy-options) to filter which file cssy must handle. Default filter is all css files: `/\.css$/i`.
 
 `match` option is either a String or an Array used to instantiate a new [regular expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions):
 
@@ -262,11 +229,13 @@ You can set the [match option](#Cssy options) to filter which file cssy must han
 }
 ```
 
-## CssyBrowser API
+---
+
+# CssyBrowser API
 
 <!-- START CssyBrowser -->
 
-### CssyBrowser()
+## CssyBrowser()
 > CssyBrowser is the object exported by a module handled by cssy:
 
 ```javascript
@@ -284,21 +253,24 @@ A CssyBrowser instance can be used as:
 - **An object** with the methods described below.
 
 **return** {`Object`}
-See [CssyBrowser.insert()](#CssyBrowser.insert)
+See [CssyBrowser.insert()](#cssybrowserinsertto-media)
 
 
-### CssyBrowser.insert(to, media)
-> Insert a `<style>` element in the DOM with current css source
+## CssyBrowser.insert([to], [media])
+> Insert css source in the DOM
 
-The content of all the injected style is binded css source changes
-(see `CssyBrowser.update()` and `CssyBrowser.onChange()`)
+Create and append a `<style>` element in the dom at `to`. If the source contain
+`@import` at-rules, imported CssyBrowser modules are injected too.
+The content of all the injected `<style>` element is binded to css source
+change: When `.update()` is called by you or by the cssy's live source
+reload server.
 
 **Parameters:**
 
-  - **to** {`[HTMLElement`|`ShadowRoot]`}
+  - **[to]** {`HTMLElement`|`ShadowRoot`}
     Where to inject the style. Default to document's head.
 
-  - **media** {`[String]`}
+  - **[media]** {`String`}
     Set the media attribute of the injected style tag
 
 **return** {`Object`}
@@ -311,14 +283,7 @@ An object with:
   other CssyBrowser instances imported
 
 
-### CssyBrowser.toString()
-> Override default toString()
-
-**return** {`String`}
-css source
-
-
-### CssyBrowser.update(src)
+## CssyBrowser.update(src)
 > Update current css source
 
 Each inject style element are updated too
@@ -329,7 +294,7 @@ Each inject style element are updated too
 
 
 
-### CssyBrowser.onChange(listener)
+## CssyBrowser.onChange(listener)
 > Listen for css source changes
 
 **Parameters:**
@@ -339,7 +304,7 @@ Each inject style element are updated too
     Change listener. Receive new css source
 
 
-### CssyBrowser.offChange(listener)
+## CssyBrowser.offChange(listener)
 > Detach change listener
 
 **Parameters:**
@@ -348,13 +313,21 @@ Each inject style element are updated too
 
 
 
-### CssyBrowser.getImports()
+## CssyBrowser.getImports()
 > Get the imported CssyBrowser instance (based on `@import` at-rules)
 
 **return** {`Array`}
 Array of CssyBrowser instance
 
+
+## CssyBrowser.toString()
+> Override default toString()
+
+**return** {`String`}
+The current css source
+
 <!-- END CssyBrowser -->
 
-## License
-The [MIT license](./LICENSE)
+---
+
+License: [The MIT license](./LICENSE)

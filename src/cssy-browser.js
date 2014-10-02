@@ -33,22 +33,25 @@ module.exports = function(src, imports) {
    * - **An object** with the methods described below.
    *
    * @return {Object}
-   *         See [CssyBrowser.insert()](#CssyBrowser.insert)
+   *         See [CssyBrowser.insert()](#cssybrowserinsertto-media)
    */
   function CssyBrowser() {
     return CssyBrowser.insert.apply(null, arguments)
   }
 
   /**
-   * Insert a `<style>` element in the DOM with current css source
+   * Insert css source in the DOM
    *
-   * The content of all the injected style is binded css source changes
-   * (see `CssyBrowser.update()` and `CssyBrowser.onChange()`)
+   * Create and append a `<style>` element in the dom at `to`. If the source contain
+   * `@import` at-rules, imported CssyBrowser modules are injected too.
+   * The content of all the injected `<style>` element is binded to css source
+   * change: When `.update()` is called by you or by the cssy's live source
+   * reload server.
    *
-   * @param  {[HTMLElement|ShadowRoot]} to
+   * @param  {HTMLElement|ShadowRoot} [to]
    *         Where to inject the style. Default to document's head.
    *
-   * @param  {[String]} media
+   * @param  {String} [media]
    *         Set the media attribute of the injected style tag
    *
    * @return {Object}
@@ -106,14 +109,6 @@ module.exports = function(src, imports) {
     }
   }
 
-  /**
-   * Override default toString()
-   *
-   * @return {String} Current css source
-   */
-  CssyBrowser.toString = function() {
-    return CssyBrowser.src;
-  }
 
   /**
    * Update current css source
@@ -159,6 +154,17 @@ module.exports = function(src, imports) {
    */
   CssyBrowser.getImports = function() {
     return imports;
+  }
+
+
+  /**
+   * Override default toString()
+   *
+   * @return {String}
+   *         The current css source
+   */
+  CssyBrowser.toString = function() {
+    return CssyBrowser.src;
   }
 
   CssyBrowser.src = src;

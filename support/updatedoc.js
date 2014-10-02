@@ -6,7 +6,7 @@ var async    = require('async')
 var fs       = require('fs')
 var resolve  = require('path').resolve
 
-var DEPTH    = process.env.DEPTH || 3;
+var DEPTH    = process.env.DEPTH || 2;
 var INDENT   = process.env.INDENT ? true : false;
 
 // Run
