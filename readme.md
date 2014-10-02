@@ -86,6 +86,7 @@ myCss.onChange(function() { })
 
 - `processor` **{String}**: Path to a [Css processor](#css-processor)
 - `noImport` **{Boolean}**: Prevent [@import](#import-css) behavior
+- `match` **{String|Array}**: Filter which file cssy must handle. See [Regex filter](#Regex filter)
 
 
 ## Cssy processor
@@ -203,7 +204,6 @@ var server = http.createServer(/* your application */).listen(8080);
 cssy.live(server);
 ```
 
-
 ### Use your own file watcher
 
 To trigger a change on a css source, just call the change listener returned by `cssy.attachServer()` :
@@ -222,14 +222,49 @@ require('chokidar')
 ```
 
 ## Import css
-*(doc in progress)*
 
-## Css module API
-*(doc in progress)*
+Unless you set the [noImport option](#Cssy options) to false, `@import` [at-rules](https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule) works like a `require()`.
+
+For instance with two css file, `app.css` and `print.css`:
+
+```css
+/* app.css */
+@import "print.css" print;
+body { /* ... */ }
+```
+
+```css
+/* print.css */
+.not-printable { display: none }
+```
+
+When you inject `app.css`, `print.css` will be injected too with the media query `print`
 
 ## Regex filter
-*(doc in progress)*
 
+You can set the [match option](#Cssy options) to filter which file cssy must handle. Default filter is all css files: `/\.css$/i`.
+
+`match` option is either a String or an Array used to instantiate a new [regular expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions):
+
+- With a string `"\.myCss$"` become `/\.myCss$/`
+- With an array, to add regular expression flags `["\.myCss$","i"]` become `/\.myCss$/i`
+
+
+```javascript
+{
+  // ... package.json ...
+  "browserify": {
+    "transform": [
+      // Match all *.mycss files in src/css
+      [ "cssy", {  match: ["src\/css\/.*\.mycss$","i"] } ]
+    ]
+  }
+}
+```
+
+## CssyBrowser API
+
+<!-- START CssyBrowser --><!-- END CssyBrowser -->
 
 ## License
 The [MIT license](./LICENSE)
