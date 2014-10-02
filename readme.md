@@ -1,6 +1,8 @@
-# cssy [![Build Status](https://secure.travis-ci.org/nopnop/cssy.png?branch=master)](http://travis-ci.org/nopnop/cssy) [![NPM version](https://badge-me.herokuapp.com/api/npm/cssy.png)](http://badges.enytc.com/for/npm/cssy)
+# cssy
+[![Build Status](https://secure.travis-ci.org/nopnop/cssy.png?branch=master)](http://travis-ci.org/nopnop/cssy) [![NPM version](https://badge-me.herokuapp.com/api/npm/cssy.png)](http://badges.enytc.com/for/npm/cssy)
 
 > A browserify transform for css (with vitamins): Use css sources **like any other module** but **without forgo** the benefits of **pre-processing** and **live source reload**.
+
 
 ## Features
 
@@ -30,17 +32,18 @@ npm install --save cssy
 ```
 Then add cssy to your [browserify transform field](https://github.com/substack/node-browserify#browserifytransform).
 
+
 ## Overview
 
 ```javascript
 
 var myCss = require('./my.css');
 
-// Use processed css source:
-console.log('Source: %s', myCss); // myCss is function object with toString()
+// Read source
+console.log('Source: %s', myCss); //
 
 // Insert css source in the document headers:
-myCss(); // Shortcut for myCss.insert([element,[media]])
+myCss(); // Shortcut for myCss.insert([element,[media query]])
 
 // Insert css source into another node:
 var el = document.createElement('template')
@@ -85,7 +88,7 @@ myCss.onChange(function() { })
 - `noImport` **{Boolean}**: Prevent [@import](#import-css) behavior
 
 
-## Css processor
+## Cssy processor
 
 For cssy, a *processor* is an asynchronous function that transform a **context object**:
 
@@ -99,6 +102,8 @@ module.exports = function (context, callback) {
   callback(new Error('oups...'))
 }
 ```
+
+Like [Browserify's transform](https://github.com/substack/node-browserify#btransformopts-tr) Cssy processor are applied only on sources of the current package. (See too [Global pre/post processor](#Global pre/post processor))
 
 ### Processor `context object` provided by cssy
 
@@ -148,13 +153,73 @@ module.exports = function(ctx, done) {
 ```
 
 ## Cssy configuration at application level
-*(doc in progress)*
+
+```javascript
+var cssy = require('cssy')
+cssy.config({
+  // Enable css minification (default: false)
+  minify:  false,
+  // Enable source map in the generated source (default: true)
+  sourcemap: true
+})
+```
+
+Css minification is done with [CSSWring](https://github.com/hail2u/node-csswring). Feel free to use another one inside a global post-processor.
 
 ## Global pre/post processor
-*(doc in progress)*
 
-## Livereload server
-*(doc in progress)*
+Use global pre/post processor must be used only at application level (where you bundle your application) for things like global `url()` rebasing, optimizations for production, etc. Pre/post processor share the same api than [cssy processor](Cssy processor).
+
+```javascript
+var cssy = require('cssy')
+
+// Add one or many pre-processors
+cssy.pre(function(ctx, done) {
+  // ... Applied on every source handled by cssy
+})
+
+// Add one or many post-processors
+cssy.post(function(ctx, done) {
+  // ... Applied on every source handled by cssy
+})
+
+```
+(TODO: Add a test and a example of url() rebasing)
+
+
+## Live source reload
+
+**Cssy provide a tiny live source reload mechanism based on websocket for development purpose only.**
+
+Classic live source reload for css usually require that all (builded) css source are accessible via an url. This is not convenient with bundled css sources that comes from anywhere in the dependency tree. And this is almost impraticable if css sources are injected somewhere else than the main document (shadow root for instance) without reloading all the page.
+
+**Just attach cssy to the http(s) server that serve the application, cssy will do the rest:** (browserify bundler must in the same process):
+
+```javascript
+var http   = require('http')
+var cssy   = require('cssy')
+var server = http.createServer(/* your application */).listen(8080);
+
+cssy.live(server);
+```
+
+
+### Use your own file watcher
+
+To trigger a change on a css source, just call the change listener returned by `cssy.attachServer()` :
+
+```javascript
+var cssyChangeListener = cssy.attachServer(server);
+cssyChangeListener('path/to/source.css');
+```
+
+Here is an example with [chockidar](https://github.com/paulmillr/chokidar) :
+
+```javascript
+require('chokidar')
+  .watch('.', {ignored: /[\/\\]\./})
+  .on('change', cssy.attachServer(server))
+```
 
 ## Import css
 *(doc in progress)*
@@ -162,6 +227,8 @@ module.exports = function(ctx, done) {
 ## Css module API
 *(doc in progress)*
 
+## Regex filter
+*(doc in progress)*
 
 
 ## License
