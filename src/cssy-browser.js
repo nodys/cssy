@@ -1,29 +1,6 @@
 
-/**
+/*
  * Create a cssy browser instance for one css source
- *
- * Used by browserify transform to expose an client api to a css source:
- *
- *    var myAppCss = require('./app.css');
- *
- *    // Insert source (default to document header):
- *    myAppCss() // Shortcut for myAppCss.insert()
- *
- *    // Insert source in another node:
- *    myAppCss(webShadowDocument)
- *
- *    // Get source:
- *    console.log(myAppCss.toString())
- *
- *    // Listen for changes (see cssy.attachServer()):
- *    myAppCss.onChange(function(src) {
- *      console.log('Source changed:',src)
- *    })
- *
- *    // Control source object :
- *    var ctrlSrc = myAppCss();
- *    ctrlSrc.remove(); // Remove source
- *    ctrlSrc.element;  // Inserted `style` element
  *
  * @param  {String} src
  *         Css source
@@ -39,11 +16,24 @@ module.exports = function(src, imports) {
   var changeListeners = [];
 
   /**
-   * Cssy browser instance is function object
+   * CssyBrowser is the object exported by a module handled by cssy:
    *
-   * Can be used as a shortcut to CssyBrowser.insert([to, [media]])
+   * ```javascript
+   * var myCss = require('./my.css');
+   * // myCss is a CssyBrowser
+   * ```
    *
-   * @return {Object} See CssyBrowser.insert()
+   * A CssyBrowser instance can be used as:
+   *
+   * - **An string** when used in a context that imply a string: thanks to
+   *   `CssyBrowser.toString()` that return the css source.
+   * - **A function**, alias of CssyBrowser.insert([to, [media]]), to inject
+   *   the css source in the document: `myCss()`,
+   *   `myCss(element)` or `myCss(element, 'media query')`.
+   * - **An object** with the methods described below.
+   *
+   * @return {Object}
+   *         See [CssyBrowser.insert()](#CssyBrowser.insert)
    */
   function CssyBrowser() {
     return CssyBrowser.insert.apply(null, arguments)

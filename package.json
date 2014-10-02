@@ -18,7 +18,8 @@
     "monitor": "mocha --reporter spec --watch",
     "debugtest": "mocha --debug-brk --reporter spec",
     "coverage": "rm -rf ./src-cov && jscoverage ./src ./src-cov && COVERAGE=true mocha --reporter html-cov > ./coverage.html || true && rm -rf ./src-cov",
-    "jshint": "./node_modules/.bin/jshint --exclude node_modules"
+    "jshint": "./node_modules/.bin/jshint --exclude node_modules",
+    "doc": "./support/updatedoc.js"
   },
   "dependencies": {
     "async": "^0.9.0",
@@ -34,6 +35,7 @@
   },
   "devDependencies": {
     "browserify": "^5.12.1",
+    "docflux": "^1.1.2",
     "expect.js": "*",
     "jsdom": "^1.0.0",
     "jshint": "*",
