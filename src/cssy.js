@@ -5,6 +5,7 @@ var createReadStream = require('fs').createReadStream
 var lrio             = require('lrio')
 var transform        = require('./transform.js');
 var processor        = require('./processor.js');
+var chokidar         = require('chokidar')
 
 
 // cssy is a browserify transform
@@ -46,14 +47,37 @@ cssy.post = function(procs) {
 
 
 /**
+ * Add an automatic cssy live source reload on a http(s) server
+ *
+ * This must be used on the same process than the browserify bundler
+ *
+ * @param {http(s).Server} server
+ *        A node http / https server
+ *
+ * @param {[FSWatcher]} watcher
+ *        Optional: a EventEmitter watcher instance (same as chokidar.FSWatcher)
+ *
+ * @return {Function}
+ *        A change listener (take one argument: the filename that changed)
+ *
+ *        With two static properties:
+ *        - watcher: the chokidar instance
+ *        - lrioServer: the lrio instance
+ */
+cssy.live = function(server, watcher) {
+  watcher  = watcher || (new chokidar.FSWatcher);
+  var listener = cssy.attachServer(server);
+  watcher.on('change', listener)
+  cssy.post(function(ctx, done) { watcher.add(ctx.filename); done(null, ctx) })
+  listener.watcher = watcher;
+  return listener;
+}
+
+/**
  * Attach a cssy live-reload server to a given http-server
  *
  * This must be used on for development purpose only: Attaching a cssy
  * live-reload server add a live-reload client to generated sources.
- *
- * cssy.attachServer() use cssy.config() to enable client liverload, sourcemap
- * and disable compression. Use cssy.config() after cssy.attachServer()
- * to disable sourcemap or enable compression
  *
  * Exemple with chokidar:
  *
@@ -66,11 +90,14 @@ cssy.post = function(procs) {
  *       chokidar.watch('./src').on('change', cssyListener);
  *     }
  *
- * @param {Object} server
+ * @param {http(s).Server} server
  *        A node http / https server
  *
  * @return {Function}
  *        A change listener (take one argument: the filename that changed)
+ *
+ *        With one static property:
+ *        - lrioServer: the lrio instance
  */
 cssy.attachServer = function(server) {
   var lrioServer = lrio(server, 'cssy')
@@ -97,30 +124,17 @@ cssy.attachServer = function(server) {
 /**
  * Global config getter/setter
  *
- * Global configuration options:
- *
- * - `compress`: Compress source (remove comments and spaces)
+ * - `minify`: Minify source
  * - `sourcemap`: Enable source-map
- * - `livereload`: Enable livereload (enabled by cssy.attachServer())
  *
+ * @param  {[Object]}
+ *         object to merge with global config
  *
- * @param  {String/Objext} key
- *         cssy config key or an object to merge with global config
- *
- * @param  {Mixed} value
- *         Config value
- *
- * @return {Mixed}
+ * @return {Object} current config
  */
-cssy.config = function(key, value) {
-  if('object' == typeof(key)) {
-    process.cssy.config = extend(process.cssy.config, key);
-    return cssy;
-  }
-  if('undefined' != typeof(value)) {
-    process.cssy.config[key] = value
-  }
-  return process.cssy.config[key]
+cssy.config = function(config) {
+  process.cssy.config = extend(process.cssy.config, config || {});
+  return process.cssy.config
 }
 
 
