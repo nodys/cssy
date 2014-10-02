@@ -134,8 +134,8 @@ function getProcessor(filename) {
 
         }
 
-        // Compress
-        if(process.cssy.config.compress) {
+        // Minify ?
+        if(process.cssy.config.minify) {
           csswring.postcss(styles)
         }
 

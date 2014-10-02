@@ -18,7 +18,7 @@ describe('cssy', function(){
   beforeEach(function() {
     cssy.reset();
     cssy.config({
-      compress:  true,
+      minify:    true,
       sourcemap: false,
     })
   })

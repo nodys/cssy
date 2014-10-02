@@ -133,7 +133,7 @@ cssy.reset = function() {
   process.cssy.preProcessors  = [];
   process.cssy.livereload     = false;
   process.cssy.config         = {
-    compress:   false,
+    minify:     false,
     sourcemap:  true
   };
 }
