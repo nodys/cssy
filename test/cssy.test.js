@@ -17,6 +17,10 @@ describe('cssy', function(){
 
   beforeEach(function() {
     cssy.reset();
+    cssy.config({
+      compress:  true,
+      sourcemap: false,
+    })
   })
 
   describe('processor', function() {
@@ -160,7 +164,10 @@ describe('cssy', function(){
 
     it('should add cssyio if livereload is enabled', function(done) {
       var filename = fixp('basic/source.css');
-      cssy.config('livereload', true);
+
+      // Attach to a mock http server to enable livereload
+      cssy.attachServer({on:function() {}});
+
       createReadStream(filename)
       .pipe(transform(filename))
       .pipe(concatStream(function(result) {
@@ -212,10 +219,7 @@ describe('cssy', function(){
       cssylr.lrioServer.broadcast = function(data) {
         expect(data.type).to.eql('change')
         expect(data.uid).to.eql('test/fixtures/import/source.css')
-        expect(data.src).to.contain('font-size: 14px;')
-        // Default configuration, with livereload server attached
-        // is to disable compress and to add sourcemap
-        expect(data.src).to.contain('sourceMappingURL')
+        expect(data.src).to.contain('font-size:14px')
         done();
       }
 

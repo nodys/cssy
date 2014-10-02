@@ -19,6 +19,10 @@ describe('cssy browser', function(){
 
   beforeEach(function() {
     cssy.reset();
+    cssy.config({
+      compress:  true,
+      sourcemap: false,
+    })
   })
 
   function readJsdomError(errors) {
@@ -74,7 +78,10 @@ describe('cssy browser', function(){
     auto('browser/tostring'))
 
   it('If enabled, style must listening for cssy livereload web socket', function(done) {
-    cssy.config('livereload', true)
+
+    // Attach to a mock http server to enable livereload
+    cssy.attachServer({on:function() {}});
+
     var fixturePath = 'browser/livereload';
     var srcPath     = fixp(fixturePath) + '/index.js';
     var html        = read(fixp(fixturePath) + '/index.html');

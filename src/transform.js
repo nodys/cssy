@@ -36,7 +36,7 @@ module.exports = function (filename) {
 
         self.push("module.exports = (require('"+browserPath+"'))(" + JSON.stringify(result.src) + ", ["+imports+"]" + ");");
 
-        if(process.cssy.config.livereload) {
+        if(process.cssy.livereload) {
           self.push("\nrequire('"+cssyioPath+"').on('change:"+result.filename+"', function(src) { module.exports.update(src)})");
         }
 

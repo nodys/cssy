@@ -75,11 +75,7 @@ cssy.post = function(procs) {
 cssy.attachServer = function(server) {
   var lrioServer = lrio(server, 'cssy')
 
-  cssy.config({
-    compress:   false,
-    sourcemap:  true,
-    livereload: true
-  });
+  process.cssy.livereload = true;
 
   function change(filename) {
     var proc = processor(filename);
@@ -135,10 +131,10 @@ cssy.reset = function() {
   process.cssy                = {};
   process.cssy.postProcessors = [];
   process.cssy.preProcessors  = [];
+  process.cssy.livereload     = false;
   process.cssy.config         = {
-    compress:   true,
-    sourcemap:  false,
-    livereload: false
+    compress:   false,
+    sourcemap:  true
   };
 }
 
