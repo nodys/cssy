@@ -4,11 +4,7 @@ var expect           = require('expect.js')
 var join             = require('path').join
 var cssy             = (process.env.COVERAGE ? require('../src-cov/cssy.js') : require('../src/cssy.js'))
 var processor        = cssy.processor
-var transform        = cssy.transform
 var read             = require('fs').readFileSync
-var createReadStream = require('fs').createReadStream
-var concatStream     = require('concat-stream')
-var EventEmitter     = require('events').EventEmitter
 var fixp             = require('./support').fixp
 
 describe('cssy processor', function(){
