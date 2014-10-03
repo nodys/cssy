@@ -38,62 +38,124 @@ npm install --save cssy
 
 ```javascript
 {
-  // ... package.json ...
-  "browserify": {
-    "transform": [
-      [ "cssy", {  /* options */ } ]
-    ]
-  }
+  // ...
+  "browserify": { "transform": [ "cssy" ] ] }
 }
 ```
 
-## Cssy options
+## Options
 
 In you `package.json` you can add some options for the current package (`[ "cssy", {  /* options */ } ]`)
 
-- `processor` **{String}**: Path to a [Css processor](#cssy-processor)
+- `parser` **{Array|String}**: One or many path to module that export a [parser](#parser)
+- `processor` **{Array|String}**: One or many path to module that export a [Css processor](#processor)
 - `noImport` **{Boolean}**: Prevent [@import](#import-css) behavior
 - `match` **{String|Array}**: Filter which file cssy must handle. See [Regex filter](#regex-filter)
 
+Path inside `parser` and `processor` options are either relative to package.json or npm package.
 
-## Cssy processor
 
-For cssy, a *processor* is an asynchronous function that transform a **context object**:
+**Example:**
 
 ```javascript
-module.exports = function (context, callback) {
-  // ... do whatever your want with context ...
 
-  // Success (node-standard async callback)
-  callback(null, context)
+  // ...
+  "browserify": { "transform": [
+    [ "cssy",
+      {  
+        "parser"   : [
+          "./mySassParser",
+          "./myLessParser"
+        ],
+        "processor": "./support/myCssProcessor",
+        "noImport" : true,
+        "match"    : ["\\.(css|mycss)$",i]
+      }
+    ]
+  ]}
+
+```
+
+## Global configuration
+
+At *application level* you can change some *global* cssy behaviors
+
+```javascript
+var cssy = require('cssy')
+cssy.config({
+  // Enable css minification (default: false)
+  minify:  false,
+  // Enable source map in the generated source (default: true)
+  sourcemap: true
+})
+```
+
+*Css minification is done with [CSSWring](https://github.com/hail2u/node-csswring). Feel free to use another one inside a [global post-processor](#global-prepost-processor).*
+
+## Internal workflow
+
+1. **Parser** Cssy try each [parser](#parser) to transform any kind of source to css (from stylus, less, sass, etc.) with a source map.
+2. **Global pre-processor**: Cssy call each [Global pre-processor](#global-prepost-processor)
+3. **processor**: Cssy call each [local processor](#processor)
+4. **Global post-processor**: Cssy call each [Global post-processor](#global-prepost-processor)
+4. **@import**: If enable cssy extract `@import` at-rules (see [Import css](#import-css))
+4. **minify**: If enable cssy minify css source
+4. **source map**: If enable cssy add the source-map
+4. **live reload**: If enable cssy add live source reload client to the generated bundle
+
+## Context object
+
+Each function that transform a css source ([parser](#parser), [global pre/post processor](#global-prepost-processor), [processor](#processor)), receive a **context object**:
+
+  - `src` **{String}**: Css source
+  - `filename` **{String}**: Css source filepath (relative to `process.cwd()`)
+  - `config` **{Object}**: The cssy's [transform configuration](https://github.com/substack/browserify-handbook#configuring-transforms)
+  - `map` **{Object}**: The [css source map](https://www.google.com/search?q=Source+Map+Revision+3+proposal) (undefined for the [parsers](#parser): as they must provide it)
+
+## Functions
+
+Each function used in cssy ([parser](#parser), [global pre/post processor](#global-prepost-processor), [processor](#processor)) use the same API and **may be asynchronous or synchronous**.
+
+```javascript
+
+// Asynchronous parser, processor, pre/post processor:
+module.exports = function (ctx, done) {
+  // ... change the ctx object ...
+
+  // Return ctx
+  done(null, ctx)
+
   // Or if something wrong happened
-  callback(new Error('oups...'))
+  done(new Error('oups...'))
+}
+
+// Synchronous parser, processor, pre/post processor:
+module.exports = function (ctx) {
+  // ... change the ctx object ...
+  return ctx;
 }
 ```
 
-Like [Browserify's transform](https://github.com/substack/node-browserify#btransformopts-tr) Cssy processor are applied only on sources of the current package. (See too [Global pre/post processor](#Global pre/post processor))
+## Parser
 
-### Processor `context object` provided by cssy
 
-  - `src` **{String}**: Css source
-  - `map` **{Object}**: The [css source map](https://www.google.com/search?q=Source+Map+Revision+3+proposal)
-  - `filename` **{String}**: Css source filepath (relative to `process.cwd()`)
-  - `config` **{Object}**: The cssy's [transform configuration](https://github.com/substack/browserify-handbook#configuring-transforms)
+Parser's job is to read a source from any format (sass, stylus, less, *whatever*), and to return a **css source** and a **source-map**.
 
-### Add a processor: the `processor` option
+**Cssy now how to handle most of the sources: css, sass, stylus and less.** But if you need something more specific, you may provide your own parser.
 
-Use `processor` option in your [transform configuration](https://github.com/substack/browserify-handbook#configuring-transforms):
+- Parsers use the [same api](#functions) than any other function used in cssy
+- See [options.parser](#options) to add your own parser before cssy's parsers
+- See [cssy's parsers for common css meta-languages](./src/parsers) as example.
+- Parser are executed in series, until one return a context with a source-map.
 
-```javascript
-  "browserify": {
-    "transform": [
-      // Path to a module relative to current package.json ...
-      [ "cssy", {  "processor": "./support/myCssProcessor" } ]
-      // ... or a npm dependency
-      [ "cssy", {  "processor": "foobar" } ]
-    ]
-  }
-```
+
+## Processor
+
+For cssy, a *processor* is an function that transform a [cssy context object](#cssy-context-object) to another [cssy context object](#cssy-context-object). Like for [browserify's transform](https://github.com/substack/node-browserify#btransformopts-tr) cssy processor are applied **only on the sources of the current package**. (See too [Global pre/post processor](#Global pre/post processor))
+
+
+- Parsers use the [same api](#functions) than any other function used in cssy
+- See [options.processor](#options) to add one or many processor
 
 ### Processor example
 Here with [postcss](https://github.com/postcss/postcss) but you can use any other library (Preferably with good source-map support)
@@ -120,23 +182,9 @@ module.exports = function(ctx, done) {
 }
 ```
 
-## Cssy configuration at application level
-
-```javascript
-var cssy = require('cssy')
-cssy.config({
-  // Enable css minification (default: false)
-  minify:  false,
-  // Enable source map in the generated source (default: true)
-  sourcemap: true
-})
-```
-
-Css minification is done with [CSSWring](https://github.com/hail2u/node-csswring). Feel free to use another one inside a global post-processor.
-
 ## Global pre/post processor
 
-Use global pre/post processor must be used only at application level (where you bundle your application) for things like global `url()` rebasing, optimizations for production, etc. Pre/post processor share the same api than [cssy processor](Cssy processor).
+Global pre/post processor must be used only at *application level* (where you bundle your application) for things like global `url()` rebasing, optimizations for production, etc. Pre/post processor share the same api than [cssy processor](Cssy processor).
 
 ```javascript
 var cssy = require('cssy')
@@ -190,7 +238,7 @@ require('chokidar')
 
 ## Import css
 
-Unless you set the [noImport option](#cssy-options) to false, `@import` [at-rules](https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule) works like a `require()`.
+Unless you set the [noImport option](#options) to false, `@import` [at-rules](https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule) works like a `require()`.
 
 For instance with two css file, `app.css` and `print.css`:
 
@@ -209,7 +257,7 @@ When you inject `app.css`, `print.css` will be injected too with the media query
 
 ## Regex filter
 
-You can set the [match option](#cssy-options) to filter which file cssy must handle. Default filter is all css files: `/\.css$/i`.
+Default filter is all css files and most meta-css-language files: `/\.(css|sass|scss|less|styl)$/i`. You can set the [match option](#options) to filter which file cssy must handle.
 
 `match` option is either a String or an Array used to instantiate a new [regular expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions):
 
