@@ -1,6 +1,19 @@
 Changelog
 =========
 
+v0.2.0 - Didactic Alligator (2014-10-03) 
+----------------------------------------------------------------------
+
+  - doc: Clean up documentation and add workflow + parser doc
+  - feature: Add default parser for stylus, sass and less
+  - test: Add test for sass, stylus and less
+  - test: Fix cssy module path
+  - test: Add some test fixture
+  - test: Refactor test modules
+  - refactor: Refactor asynchronous composition and add parsers
+  - fix: Support empty source
+
+
 v0.1.1 - Discreet Octopus (2014-10-02) 
 ----------------------------------------------------------------------
 
