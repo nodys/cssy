@@ -41,6 +41,7 @@
     "jsdom": "^1.0.0",
     "jshint": "*",
     "mocha": "*",
+    "node-sass": "^0.9.5-rc1",
     "postcss-calc": "^2.0.1",
     "postcss-custom-properties": "^0.3.1",
     "rework": "^1.0.1",
