@@ -63,7 +63,7 @@ describe('cssy processor', function(){
   })
 
 
-  it.skip('should support empty css source', function(done) {
+  it('should support empty css source', function(done) {
     var filename = fixp('empty/source.css');
     var source   = read(filename).toString();
     var proc     = processor(filename);

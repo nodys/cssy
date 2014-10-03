@@ -55,6 +55,7 @@ function getProcessor(filename) {
   function processor(src, done) {
 
 
+
     // Transform source
     async.waterfall([
       // 1. Initialize context
@@ -65,16 +66,31 @@ function getProcessor(filename) {
         }
 
         // Generate base source-map
-        var result = postcss()
-          .process(src, {
-            map            : {
-              sourcesContent : true,
-              annotation     : false
-            },
-            from : ctx.filename
-          })
-        ctx.src = result.css;
-        ctx.map = result.map.toJSON();
+        if(src.trim() == '') {
+          // Fake map for empty source
+          ctx.src = '';
+          ctx.map = {
+            version  : 3,
+            sources  : [ctx.filename],
+            names    : [],
+            mappings : 'A',
+            file     : 'to.css'
+          }
+        } else {
+          var result = postcss()
+            .process(src, {
+              map            : {
+                sourcesContent : true,
+                annotation     : false
+              },
+              from : ctx.filename
+            })
+          ctx.src = result.css;
+          ctx.map = result.map.toJSON();
+        }
+
+
+
         next(null, ctx)
       },
 
