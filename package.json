@@ -16,7 +16,7 @@
     "test": "mocha",
     "spec": "mocha --reporter spec",
     "monitor": "mocha --reporter spec --watch",
-    "debugtest": "mocha --debug-brk --reporter spec",
+    "debugtest": "node-debug _mocha",
     "coverage": "rm -rf ./src-cov && jscoverage ./src ./src-cov && COVERAGE=true mocha --reporter html-cov > ./coverage.html || true && rm -rf ./src-cov",
     "jshint": "./node_modules/.bin/jshint --exclude node_modules",
     "doc": "./support/updatedoc.js"
