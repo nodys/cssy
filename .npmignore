@@ -2,3 +2,6 @@
 /tmp
 npm-debug.log
 /src-cov
+/test
+/support
+/coverage.html

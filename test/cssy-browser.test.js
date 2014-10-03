@@ -11,9 +11,7 @@ var concatStream     = require('concat-stream')
 var jsdom            = require('jsdom')
 var browserify       = require('browserify')
 
-function fixp(filename) {
-  return join(__dirname, '/fixtures', filename);
-}
+var fixp             = require('./support').fixp
 
 describe('cssy browser', function(){
 
