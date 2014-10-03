@@ -12,6 +12,7 @@ var extname         = require('path').extname
 var compose         = require('./utils').compose
 var toAsync         = require('./utils').toAsync
 var extend          = require('extend')
+var cssyParsers     = require('./parsers')
 
 
 module.exports = getProcessor;
@@ -49,7 +50,7 @@ function getProcessor(filename) {
   var config       = getCssyConfig(pkg) || {};
 
   // Check if cssy should handle this source
-  config.match     = config.match || ['\\.css$', 'i'];
+  config.match     = config.match || ['\\.(css|sass|scss|less|styl)$', 'i'];
   if(!Array.isArray(config.match)) {
     config.match = [config.match]
   }
@@ -58,8 +59,8 @@ function getProcessor(filename) {
     return;
   }
 
-  // List local parsers according to config:
-  var parsers = resolveFunctionList(config.parsers || config.parser, basedir);
+  // List local parsers according to config (concat with internal cssy parsers):
+  var parsers = resolveFunctionList(config.parsers || config.parser, basedir).concat(cssyParsers)
 
   // List local processors according to config:
   var localProcessors = resolveFunctionList(config.processors || config.processor, basedir);

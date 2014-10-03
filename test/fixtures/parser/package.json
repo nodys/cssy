@@ -4,11 +4,9 @@
       [
         "cssy",
         {
-          "match": ["\\.(css|sass|less|styl)$","i"],
+          "match": ["\\.(css|sass|scss|less|styl|mycss)$","i"],
           "parser": [
-            "./parsers/sass.js",
-            "./parsers/less.js",
-            "./parsers/stylus.js"
+            "./parsers/mycss.js"
           ]
         }
       ]

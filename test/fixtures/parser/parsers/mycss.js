@@ -1,9 +1,11 @@
-var stylus = require('stylus');
-
+// Basic parser for stylus sources
 module.exports = function(ctx, done) {
-  if(!/\.styl$/i.test(ctx.filename)) return done();
 
-  var style = stylus(ctx.src)
+  // Work for *.mycss
+  if(!/\.(mycss)$/i.test(ctx.filename)) return done();
+
+  // Fake mycss (stylus)
+  var style = require('stylus')(ctx.src)
     .set('filename', ctx.filename)
     .set('sourcemap', {});
 
@@ -12,5 +14,4 @@ module.exports = function(ctx, done) {
     ctx.map = style.sourcemap;
     done(null, ctx)
   })
-
 }

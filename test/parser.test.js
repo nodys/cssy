@@ -35,8 +35,12 @@ describe('cssy parser', function(){
 
   it('with sass', auto('parser/source.sass'))
 
+  it('with scss', auto('parser/source.scss'))
+
   it('with less', auto('parser/source.less'))
 
   it('with stylus', auto('parser/source.styl'))
+
+  it('with specific parser', auto('parser/source.mycss'))
 
 })
