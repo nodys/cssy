@@ -40,13 +40,15 @@
     "expect.js": "*",
     "jsdom": "^1.0.0",
     "jshint": "*",
+    "less": "^1.7.5",
     "mocha": "*",
     "node-sass": "^0.9.5-rc1",
     "postcss-calc": "^2.0.1",
     "postcss-custom-properties": "^0.3.1",
     "rework": "^1.0.1",
     "rework-calc": "^1.1.0",
-    "rework-vars": "^3.1.1"
+    "rework-vars": "^3.1.1",
+    "stylus": "^0.49.1"
   },
   "browser": "./src/cssy-browser.js",
   "keywords": [

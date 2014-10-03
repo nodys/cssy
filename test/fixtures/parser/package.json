@@ -1,0 +1,17 @@
+{
+  "browserify": {
+    "transform": [
+      [
+        "cssy",
+        {
+          "match": ["\\.(css|sass|less|styl)$","i"],
+          "parser": [
+            "./parsers/sass.js",
+            "./parsers/less.js",
+            "./parsers/stylus.js"
+          ]
+        }
+      ]
+    ]
+  }
+}

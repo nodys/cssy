@@ -213,8 +213,8 @@ You can set the [match option](#cssy-options) to filter which file cssy must han
 
 `match` option is either a String or an Array used to instantiate a new [regular expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions):
 
-- With a string `"\.myCss$"` become `/\.myCss$/`
-- With an array, to add regular expression flags `["\.myCss$","i"]` become `/\.myCss$/i`
+- With a string `"\\.myCss$"` become `/\.myCss$/`
+- With an array, to add regular expression flags `["\\.myCss$","i"]` become `/\.myCss$/i`
 
 
 ```javascript
@@ -223,7 +223,7 @@ You can set the [match option](#cssy-options) to filter which file cssy must han
   "browserify": {
     "transform": [
       // Match all *.mycss files in src/css
-      [ "cssy", {  match: ["src\/css\/.*\.mycss$","i"] } ]
+      [ "cssy", {  match: ["src\\/css\\/.*\\.mycss$","i"] } ]
     ]
   }
 }
