@@ -58,6 +58,26 @@ describe('cssy processor', function(){
     })
   })
 
+  it('should throw an error on invalid css source', function(done) {
+    var filename = fixp('basic/invalid.css');
+    var source   = read(filename).toString();
+    var proc     = processor(filename);
+    proc(source, function(err, result) {
+      expect(err.message).to.contain('test/fixtures/basic/invalid.css:1:1: Unclosed block')
+      done()
+    })
+  })
+
+  it('should throw an error on unknown format', function(done) {
+    var filename = fixp('basic/unknownformat.metacss');
+    var source   = read(filename).toString();
+    var proc     = processor(filename, { match: /metacss$/ });
+    proc(source, function(err, result) {
+      expect(err.message).to.contain('Try to use appropriate parser for')
+      done()
+    })
+  })
+
 
   it('should support empty css source', function(done) {
     var filename = fixp('empty/source.css');

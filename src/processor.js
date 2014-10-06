@@ -11,6 +11,7 @@ var csswring        = require('csswring')
 var extname         = require('path').extname
 var compose         = require('./utils').compose
 var toAsync         = require('./utils').toAsync
+var getCssyConfig   = require('./utils').getCssyConfig
 var extend          = require('extend')
 var cssyParsers     = require('./parsers')
 
@@ -34,36 +35,37 @@ module.exports = getProcessor;
  *            - `path`:  The path relative to the source
  *            - `media`: The css media query
  */
-function getProcessor(filename) {
+function getProcessor(filename, config) {
 
   if(!exists(filename)) return;
 
   // Filename always relative to cwd
-  var filename     = pathRelative(process.cwd(), pathResolve(filename))
+  var filename  = pathRelative(process.cwd(), pathResolve(filename))
 
   // Package.json relative to filename
-  var pkgPath      = relativePackage(pathResolve(filename))
-  var pkg          = require(pkgPath)
-  var basedir      = dirname(pkgPath)
+  var pkgPath   = relativePackage(pathResolve(filename))
 
   // Cssy config
-  var config       = getCssyConfig(pkg) || {};
+  config        = config || getCssyConfig(pkgPath);
+
+  config.basedir = config.basedir || dirname(pkgPath);
 
   // Check if cssy should handle this source
   config.match     = config.match || ['\\.(css|sass|scss|less|styl)$', 'i'];
-  if(!Array.isArray(config.match)) {
-    config.match = [config.match]
+
+  if(!(config.match instanceof RegExp)) {
+    config.match  = RegExp.apply(null, Array.isArray(config.match) ? config.match : [config.match])
   }
 
-  if(!(RegExp.apply(null, config.match)).test(filename)) {
+  if(!(config.match).test(filename)) {
     return;
   }
 
   // List local parsers according to config (concat with internal cssy parsers):
-  var parsers = resolveFunctionList(config.parsers || config.parser, basedir).concat(cssyParsers)
+  var parsers = resolveFunctionList(config.parsers || config.parser, config.basedir).concat(cssyParsers)
 
   // List local processors according to config:
-  var localProcessors = resolveFunctionList(config.processors || config.processor, basedir);
+  var localProcessors = resolveFunctionList(config.processors || config.processor, config.basedir);
 
 
   function handle(src, done) {
@@ -108,11 +110,7 @@ function getProcessor(filename) {
             },
             function(found) {
               if(found) {
-                if(!newCtx.map) {
-                  parseCss(newCtx, next)
-                } else {
-                  next(null, newCtx)
-                }
+                next(null, newCtx)
               } else {
                 parseCss(ctx, next)
               }
@@ -148,16 +146,18 @@ function getProcessor(filename) {
           styles.eachAtRule(function (atRule) {
             if (atRule.name !== "import")  return;
             if(/^url\(|:\/\//.test(atRule.params)) return; // Absolute
-            var imp = parseImport(atRule.params);
-            var impAbsPath = resolve.sync(imp.path, {basedir:dirname(filename)});
-            // Check for cssy transform
-            var pkgPath = relativePackage(impAbsPath)
-            if(pkgPath && getCssyConfig(require(pkgPath))) {
-              ctx.imports.push(imp);
-              atRule.removeSelf()
-            } else {
-              // Fallback to inline source import ? (TODO: find a better solution)
-            }
+            // var imp = parseImport(atRule.params);
+            ctx.imports.push(parseImport(atRule.params))
+            atRule.removeSelf()
+            // var impAbsPath = resolve.sync(imp.path, {basedir:dirname(filename)});
+            // // Check for cssy transform
+            // var pkgPath = relativePackage(impAbsPath)
+            // if(pkgPath && getCssyConfig(require(pkgPath))) {
+            //   ctx.imports.push(imp);
+            //   atRule.removeSelf()
+            // } else {
+            //   // Fallback to inline source import ? (TODO: find a better solution)
+            // }
           })
 
         }
@@ -259,19 +259,4 @@ function parseImport(imp) {
     path:  result[1],
     media: result[2].trim()
   }
-}
-
-/**
- * Extract cssy configuration from a package.json object
- *
- * @param {Object} pkg
- * @return {Object}
- */
-function getCssyConfig(pkg) {
-  if(!pkg.browserify || !pkg.browserify.transform) return;
-  return pkg.browserify.transform.reduce(function(memo, item) {
-    if(memo) return memo;
-    if(('string' == typeof(item)) || (item[0] !== 'cssy') || !item[1]) return;
-    return item[1];
-  }, null)
 }

@@ -2,7 +2,8 @@
 
 var expect = require('expect.js')
 var utils  = (process.env.COVERAGE ? require('../src-cov/utils.js') : require('../src/utils.js'))
-
+var fixp   = require('./support').fixp
+var resolve = require('path').resolve
 
 describe('cssy utils', function(){
 
@@ -90,10 +91,35 @@ describe('cssy utils', function(){
 
     it('should throw an error on invalid argument', function() {
       expect(function() {
-        utils.toAsync('invalid')
+        utils.compose('invalid')
       }).to.throwError('Invalid argument')
     })
   })
 
+  describe('.getCssyConfig()', function() {
+    var pkgpath = fixp('getconfig/package.json');
+
+    it('should get the cssy config for given package.json path', function() {
+      expect(utils.getCssyConfig(pkgpath))
+        .to.eql({ "processor": "./cssProcessor.js" })
+    })
+
+    it('should get the cssy config for given package.json object', function() {
+      expect(utils.getCssyConfig(require(pkgpath)))
+        .to.eql({ "processor": "./cssProcessor.js" })
+    })
+
+    it('should return an empty config object if package can not be read', function() {
+      expect(utils.getCssyConfig('invalid')).to.eql({})
+
+    })
+  })
+
+  describe('.getCwdPackagePath()', function() {
+    it('should get cwd package.json path', function() {
+      expect(utils.getCwdPackagePath())
+        .to.eql(resolve(__dirname, '../package.json'))
+    })
+  })
 
 })

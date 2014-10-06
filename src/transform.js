@@ -1,5 +1,5 @@
 var through2     = require('through2')
-var processor    = require('./processor')
+var getProcessor = require('./processor')
 var pathResolve  = require('path').resolve
 var pathRelative = require('path').relative
 var dirname      = require('path').dirname
@@ -7,10 +7,10 @@ var dirname      = require('path').dirname
 /**
  * Browserify transform (see browsreify API)
  */
-module.exports = function (filename) {
+module.exports = function (filename, config) {
 
   // Get cssy source processor
-  var proc = processor(filename);
+  var proc = getProcessor(filename, config);
 
   // If undefined, then ignore and pass through
   if(!proc) return through2();

@@ -6,10 +6,17 @@ var lrio             = require('lrio')
 var transform        = require('./transform.js');
 var processor        = require('./processor.js');
 var chokidar         = require('chokidar')
+// var resolve          = require('path').resolve
+var resolve          = require('resolve').sync
 
-
-// cssy is a browserify transform
-var cssy = module.exports = transform;
+// cssy is a browserify transform and a browserify plugin
+var cssy = module.exports = module.exports = function(fileOrBrowserify, opts) {
+  if('string' == typeof(fileOrBrowserify)) {
+    return require('./transform')(fileOrBrowserify, opts);
+  } else {
+    return require('./plugin')(fileOrBrowserify, opts);
+  }
+}
 
 // Export api
 cssy.transform    = transform;
@@ -25,6 +32,9 @@ cssy.processor    = processor;
 cssy.pre = function(procs) {
   if(!Array.isArray(procs)) procs = [procs];
   procs.forEach(function(proc) {
+    if(typeof(proc) === 'string') {
+      proc = require(resolve(proc, {basedir: process.cwd()}));
+    }
     process.cssy.preProcessors.push(proc);
   })
   return cssy;
@@ -40,6 +50,9 @@ cssy.pre = function(procs) {
 cssy.post = function(procs) {
   if(!Array.isArray(procs)) procs = [procs];
   procs.forEach(function(proc) {
+    if(typeof(proc) === 'string') {
+      proc = require(resolve(proc, {basedir: process.cwd()}));
+    }
     process.cssy.postProcessors.push(proc);
   })
   return cssy;
@@ -65,6 +78,9 @@ cssy.post = function(procs) {
  *        - lrioServer: the lrio instance
  */
 cssy.live = function(server, watcher) {
+  if(typeof(server) === 'string') {
+    server = require(resolve(server));
+  }
   watcher  = watcher || (new chokidar.FSWatcher);
   var listener = cssy.attachServer(server);
   watcher.on('change', listener)

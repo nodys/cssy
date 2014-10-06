@@ -1,5 +1,7 @@
-var async = require('async')
-
+var async   = require('async')
+var dirname = require('path').dirname
+var join    = require('path').join
+var exists  = require('fs').existsSync
 
 /**
  * Return a composition of sync and async function exectuable in sequence
@@ -75,5 +77,53 @@ exports.toAsync = function (fn) {
       doneOnce(e);
     }
     if(typeof(result) != 'undefined') doneOnce(null, result)
+  }
+}
+
+
+/**
+ * Extract cssy configuration from a package.json
+ *
+ * @param {Object|String} [pkg]
+ *        A package.json object or path to `package.json` to read
+ *        Default is the path to the current working directory package.json
+ *        (if any)
+ *
+ * @return {Object}
+ *         Cssy configuration (or {})
+ */
+exports.getCssyConfig = function(pkg) {
+
+  if(!pkg) {
+    pkg = exports.getCwdPackagePath()
+  }
+
+  if('string' === typeof(pkg)) {
+    try {
+      pkg = require(pkg);
+    } catch(e) {
+      pkg = {};
+    }
+  }
+
+  if(!pkg.browserify || !pkg.browserify.transform) return {};
+  return pkg.browserify.transform.reduce(function(memo, item) {
+    if(memo) return memo;
+    if(('string' == typeof(item)) || (item[0] !== 'cssy') || !item[1]) return;
+    return item[1];
+  }, null) || {};
+}
+
+
+/**
+ * Return the package.json path for the current working directory
+ */
+exports.getCwdPackagePath = function() {
+  var searchIn = process.cwd();
+  var filename = 'package.json';
+  while(dirname(searchIn) != searchIn) {
+    path = join(searchIn, filename)
+    if(exists(path)) return path;
+    searchIn = dirname(searchIn);
   }
 }
