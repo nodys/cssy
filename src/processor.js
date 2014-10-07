@@ -146,18 +146,8 @@ function getProcessor(filename, config) {
           styles.eachAtRule(function (atRule) {
             if (atRule.name !== "import")  return;
             if(/^url\(|:\/\//.test(atRule.params)) return; // Absolute
-            // var imp = parseImport(atRule.params);
             ctx.imports.push(parseImport(atRule.params))
             atRule.removeSelf()
-            // var impAbsPath = resolve.sync(imp.path, {basedir:dirname(filename)});
-            // // Check for cssy transform
-            // var pkgPath = relativePackage(impAbsPath)
-            // if(pkgPath && getCssyConfig(require(pkgPath))) {
-            //   ctx.imports.push(imp);
-            //   atRule.removeSelf()
-            // } else {
-            //   // Fallback to inline source import ? (TODO: find a better solution)
-            // }
           })
 
         }
