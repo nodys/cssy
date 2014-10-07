@@ -30,10 +30,12 @@ describe('cssy browser', function(){
     var srcPath  = fixp(fixturePath) + '/index.js';
     var html     = read(fixp(fixturePath) + '/index.html');
 
-    browserify(srcPath).bundle().pipe(concatStream(function(result) {
+    browserify(srcPath)
+    .plugin(cssy, {remedy:true})
+    .bundle().pipe(concatStream(function(result) {
       var bundle = result.toString();
       jsdom.env({
-        'html': html,
+        'html': html.toString(),
         'src' : [bundle],
         'done': function(errors, window) {
           if(errors && errors.length)  {
@@ -49,6 +51,7 @@ describe('cssy browser', function(){
     var expected = read(fixp(fixturePath) + '/expected.html').toString().trim().replace(/\n/g,'');;
     return function(done) {
       simu(fixturePath, function(err, window) {
+        if(err) return done(err)
         var result = window.document.documentElement.outerHTML.trim().replace(/\n/g,'');
         expect(result).to.eql(expected)
         done();
@@ -61,6 +64,12 @@ describe('cssy browser', function(){
 
   it('@import should import sources with media query attribute',
     auto('browser/import'))
+
+  it('@import should import sources from other kind of modules',
+    auto('browser/import-notcssy'))
+
+  it('@import should import css source from module that does not provide cssy transform thanks to remedy plugin',
+    auto('browser/import-remedy'))
 
   it('.remove() should remove sources and imported sources',
     auto('browser/remove'))

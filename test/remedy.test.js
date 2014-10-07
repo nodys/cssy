@@ -4,6 +4,7 @@ var expect           = require('expect.js')
 var cssy             = (process.env.COVERAGE ? require('../src-cov/cssy.js') : require('../src/cssy.js'))
 var processor        = cssy.processor
 var transform        = cssy.transform
+var remedy           = cssy.remedy
 var read             = require('fs').readFileSync
 var createReadStream = require('fs').createReadStream
 var concatStream     = require('concat-stream')
@@ -12,9 +13,8 @@ var browserify       = require('browserify')
 var postcssCalc      = require('postcss-calc');
 var postcss          = require('postcss');
 
-var nocssy           = require('../src/nocssy.js');
 
-describe('cssy with nocssy plugin', function(){
+describe('cssy with remedy plugin', function(){
 
   beforeEach(function() {
     cssy.reset();
@@ -26,8 +26,8 @@ describe('cssy with nocssy plugin', function(){
 
   it('should allow the use of source from package without cssy', function(done) {
     var b = browserify();
-    b.plugin(nocssy)
-    b.add(fixp('nocssy/source.css'));
+    b.plugin(remedy)
+    b.add(fixp('remedy/source.css'));
     b.bundle().pipe(concatStream(function(result) {
       var src = result.toString();
       expect(src).to.contain('module.exports')
@@ -56,7 +56,7 @@ describe('cssy with nocssy plugin', function(){
 
     var b = browserify();
 
-    b.plugin(nocssy, {
+    b.plugin(remedy, {
       parser: function(ctx) {
         flags.parser = true;
         return ctx;
@@ -67,7 +67,7 @@ describe('cssy with nocssy plugin', function(){
       }
     })
 
-    b.add(fixp('nocssy/source.css'));
+    b.add(fixp('remedy/source.css'));
     b.bundle().pipe(concatStream(function(result) {
       var src = result.toString();
       expect(flags.pre).to.be(true)
@@ -83,8 +83,8 @@ describe('cssy with nocssy plugin', function(){
 
   it('should work with @import too', function(done) {
     var b = browserify();
-    b.plugin(nocssy)
-    b.add(fixp('nocssy/source-import.css'));
+    b.plugin(remedy)
+    b.add(fixp('remedy/source-import.css'));
     b.bundle().pipe(concatStream(function(result) {
       var src = result.toString();
       expect(src).to.contain('module.exports')

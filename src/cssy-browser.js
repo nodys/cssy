@@ -113,7 +113,9 @@ function createCssyBrowser(src, imports) {
         element.parentNode.removeChild(element);
       } catch(e) {}
       children.forEach(function(child) {
-        child.remove();
+        if('function' == typeof(child.remove)) {
+          child.remove();
+        }
       })
       return CssyBrowser;
     }

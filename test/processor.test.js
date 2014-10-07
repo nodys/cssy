@@ -119,42 +119,5 @@ describe('cssy processor', function(){
     })
   })
 
-  describe('with global pre/post processor', function() {
-
-    it('should run pre-process as waterfall', function(done) {
-      var steps = [];
-
-      cssy.pre([
-        function(ctx, done) {
-          steps.push('pre1')
-          done(null, ctx);
-        },
-        function(ctx, done) {
-          steps.push('pre2')
-          done(null, ctx);
-        },
-      ])
-
-      cssy.post([
-        function(ctx, done) {
-          steps.push('post1')
-          done(null, ctx);
-        },
-        function(ctx, done) {
-          steps.push('post2')
-          done(null, ctx);
-        }
-      ])
-
-      var filename = fixp('basic/source.css');
-      var source   = read(filename).toString();
-      var proc     = processor(filename);
-      proc(source, function(err, result) {
-        if(err) return done(err);
-        expect(steps).to.eql(['pre1','pre2', 'post1', 'post2'])
-        done()
-      })
-    })
-  })
 
 })

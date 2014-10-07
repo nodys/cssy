@@ -65,7 +65,7 @@ describe('cssy transform', function(){
     .pipe(transform(filename))
     .pipe(concatStream(function(result) {
       var src = result.toString();
-      expect(src).to.contain('[{ cssy: require("./sub/common.css"), media:"screen"}]')
+      expect(src).to.contain('[{ module: require("./sub/common.css"), media:"screen"}]')
       done();
     }))
   })
