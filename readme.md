@@ -188,7 +188,7 @@ module.exports = function(ctx, done) {
 
 ## Global pre/post processor
 
-Global pre/post processor must be used only at *application level* (where you bundle your application) for things like global `url()` rebasing, optimizations for production, etc. Pre/post processor share the same api than [cssy processor](Cssy processor).
+Global pre/post processor must be used only at *application level* (where you bundle your application) for things like global `url()` rebasing, optimizations for production, etc. Pre/post processor share the same api than [cssy processor](#processor).
 
 ```javascript
 var cssy = require('cssy')
@@ -204,8 +204,7 @@ cssy.post(function(ctx, done) {
 })
 
 ```
-(TODO: Add a test and a example of url() rebasing)
-
+See too [use cssy plugin to add pre/post processor](#cssy-plugin)
 
 ## Live source reload
 
