@@ -24,6 +24,9 @@ module.exports = getProcessor;
  * @param  {String} filename
  *         File path of the source to process
  *
+ * @param  {Object} [config]
+ *         Use given config instead of relative package.json config
+ *
  * @return {Function}
  *         An asynchronous processing function with two arguments: A css source
  *         to process and a standard node callback (err, result)
@@ -60,6 +63,9 @@ function getProcessor(filename, config) {
   if(!(config.match).test(filename)) {
     return;
   }
+
+  // Default import behavior:
+  config.import = ('undefined' == typeof(config.import)) ? true : config.import;
 
   // List local parsers according to config (concat with internal cssy parsers):
   var parsers = resolveFunctionList(config.parsers || config.parser, config.basedir).concat(cssyParsers)
@@ -142,7 +148,7 @@ function getProcessor(filename, config) {
         })
 
         // Extract imports
-        if(!ctx.config.noImport) {
+        if(ctx.config.import) {
           styles.eachAtRule(function (atRule) {
             if (atRule.name !== "import")  return;
             if(/^url\(|:\/\//.test(atRule.params)) return; // Absolute

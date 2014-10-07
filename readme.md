@@ -23,7 +23,9 @@ console.log('Source: %s', myCss)  // Use as a string
 - **@import**: If enabled, the css at-rule [@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import) `require()` and inject another css module for you.
 - **Source map**: If enabled, cssy inject a [source map](https://developer.chrome.com/devtools/docs/css-preprocessors).
 - **Live source reload**: Provide a simple http(s) server hook reload seamlessly css source in development environnement.
-- **Regex filter**: Configurable, you can apply cssy's transform selectively (usefull to handle pre-transformed source like sass, less, styl, etc.)
+- **Regex filter**: Configurable, you can apply cssy's transform selectively
+- **Plugin**: Use [cssy as a plugin](#cssy-plugin) at application level to configure cssy finely
+- **Remedy**: Enable [cssy remedy](#remedy) to handle package that does not export css as commonjs module
 
 Want a nice cocktail recipe ? Use **source map** in combination with cssy's **live source reload feature** and chrome's [in-browser edition](https://developer.chrome.com/devtools/docs/workspaces).
 
@@ -49,7 +51,7 @@ In you `package.json` you can add some options for the current package (`[ "cssy
 
 - `parser` **{Array|String}**: One or many path to module that export a [parser](#parser)
 - `processor` **{Array|String}**: One or many path to module that export a [Css processor](#processor)
-- `noImport` **{Boolean}**: Prevent [@import](#import-css) behavior
+- `import` **{Boolean}**: Allow [@import](#import-css) behavior (default: true)
 - `match` **{String|Array}**: Filter which file cssy must handle. See [Regex filter](#regex-filter)
 
 Path inside `parser` and `processor` options are either relative to package.json or npm package.
@@ -68,7 +70,7 @@ Path inside `parser` and `processor` options are either relative to package.json
           "./myLessParser"
         ],
         "processor": "./support/myCssProcessor",
-        "noImport" : true,
+        "import"   : false,
         "match"    : ["\\.(css|mycss)$",i]
       }
     ]
@@ -240,7 +242,7 @@ require('chokidar')
 
 ## Import css
 
-Unless you set the [noImport option](#options) to false, `@import` [at-rules](https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule) works like a `require()`.
+Unless you set the [import option](#options) to false, `@import` [at-rules](https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule) works like a `require()`.
 
 For instance with two css file, `app.css` and `print.css`:
 
@@ -278,6 +280,97 @@ Default filter is all css files and most meta-css-language files: `/\.(css|sass|
   }
 }
 ```
+
+## Cssy plugin
+
+Cssy can be used as a browserify plugin to set global behaviors:
+
+#### Using browserify api
+
+```javascript
+var browserify = require('browserify');
+var cssy       = require('cssy');
+var b = browserify('./app.css')
+b.plugin(cssy, {
+  // Global configuration:
+  minify:    true,
+  sourcemap: false,
+
+  // See live source reload:
+  live: myHttpServerInstance,
+
+  // See pre/post processor (function or path to a processor module):
+  pre:  [
+    './myPreprocessor',
+    function anotherPreprocessor(ctx) { return ctx }
+  ],
+  post: 'post-processor',
+
+  // See remedy:
+  //   - Use current package cssy config:
+  remedy: true,
+  //   - Use set remedy config:
+  remedy: {
+    processor: './processor' // (function or path to a processor module)
+    match:     /css$/i,
+    import:    false
+  }
+})
+
+```
+
+#### Using browserify command
+
+Browserify use [subarg](https://www.npmjs.org/package/subarg) syntaxe. See too [browserify plugin](https://github.com/substack/node-browserify#plugins)
+
+```sh
+browserify ./app.css -p [                                 \
+  cssy                                                    \
+    --minify                                              \
+    --no-sourcemap                 # sourcemap = false    \
+    --live './server.js'                                  \
+    --pre  './myPreprocessor'                             \
+    --pre  'another-preprocessor'  # repeat for an array  \
+    --post 'post-processor'                               \
+    --remedy                       # enable remedy ...    \
+    --remedy [                     # ... or use subarg    \
+      --processor './processor'                           \
+      --no-import                                         \
+      --match 'css$' --match 'i'                          \
+    ]                                                     \
+]
+```
+
+## Remedy
+
+**Cssy's remedy is a solution to use libraries that does not export their css sources as commonjs modules**
+
+Browserify transforms are scoped to the current package, not its dependency: and that's a good thing !
+
+> *[From module-deps readme:](https://github.com/substack/module-deps#transforms)* (...) the transformations you specify will not be run for any files in node_modules/. This is because modules you include should be self-contained and not need to worry about guarding themselves against transformations that may happen upstream.
+
+**However**, if you want to use some parts of a library like [semantic-ui](https://github.com/Semantic-Org/Semantic-UI), cssy provide a solution **at application level** (where you bundle your application): the **remedy** global transform.
+
+#### Enable remedy:
+
+If remedy options is `true` cssy will use the cssy configuration from the `package.json` closest to the current working directory :
+
+```javascript
+// Add remedy to a browserify instance (bundler)
+bundler.plugin(cssy, { remedy: true })
+```
+
+But you can set specific options has described in the [cssy plugin section](#cssy-plugin)
+
+```javascript
+// Add remedy to a browserify instance (bundler)
+bundler.plugin(cssy, { remedy: { processor: 'myprocessor' } })
+```
+
+#### Remedy options:
+
+Remedy options are the same of [the cssy's transform options](#options).
+
 
 ---
 
@@ -326,7 +419,7 @@ reload server.
 **return** {`Object`}
 An object with:
 - `element` **{HTMLElement}**: The `style` element inserted
-- `imported` **{Array}**: The other CssyBrowser instances imported
+- `children` **{Array}**: The other CssyBrowser instances imported
   and injected by this instance
 - `remove` **{Function}**: Remove injected `style` element and all
   other CssyBrowser instances imported

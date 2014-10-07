@@ -9,10 +9,6 @@ var getCssyConfig   = require('./utils').getCssyConfig
 
 module.exports = function(b, config) {
 
-  if('string' == typeof(config)) {
-    config = require(resolve(config));
-  }
-
   if('[object Object]' != Object.prototype.toString.call(config)) {
     config = getCssyConfig(); // Default is the cwd package.json
   }
@@ -31,7 +27,7 @@ module.exports = function(b, config) {
 
   b.transform({global: true}, function(filename) {
 
-    if(!match.test(filename)) return through2();
+    if(!match.test(filename))    return through2();
 
     var code      = '';
     return through2(
@@ -42,7 +38,7 @@ module.exports = function(b, config) {
       function (done) {
         var self     = this;
 
-        if(!syntaxError(code, filename)) {
+        if(/^module\.exports\s=/.test(code) || !syntaxError(code, filename)) {
           self.push(code);
           done();
         } else {

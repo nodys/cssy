@@ -56,6 +56,7 @@
     "css",
     "browserify",
     "browserify-transform",
+    "browserify-plugin",
     "livereload",
     "browser",
     "webcomponent"
