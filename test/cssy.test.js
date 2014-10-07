@@ -50,10 +50,10 @@ describe('cssy', function(){
       pre       : function(ctx) { flags.pre  = true; return ctx },
       post      : function(ctx) { flags.post = true; return ctx },
       live      : mockServer,
-      nocssy    : true,
+      remedy    : true,
     })
 
-    b.add(fixp('nocssy/source.css'))
+    b.add(fixp('remedy/source.css'))
 
     b.bundle()
     .pipe(concatStream(function(result) {

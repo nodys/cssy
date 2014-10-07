@@ -6,8 +6,8 @@ var lrio             = require('lrio')
 var transform        = require('./transform.js');
 var processor        = require('./processor.js');
 var chokidar         = require('chokidar')
-// var resolve          = require('path').resolve
 var resolve          = require('resolve').sync
+var remedy           = require('./remedy')
 
 // cssy is a browserify transform and a browserify plugin
 var cssy = module.exports = module.exports = function(fileOrBrowserify, opts) {
@@ -21,6 +21,7 @@ var cssy = module.exports = module.exports = function(fileOrBrowserify, opts) {
 // Export api
 cssy.transform    = transform;
 cssy.processor    = processor;
+cssy.remedy       = remedy;
 
 /**
  * Add a global cssy pre-processor

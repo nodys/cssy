@@ -1,19 +1,25 @@
 
+
+module.exports = createCssyBrowser;
+
 /*
  * Create a cssy browser instance for one css source
  *
  * @param  {String} src
  *         Css source
  *
- * @param  {Array} imports
+ * @param  {Array} [imports]
  *         List of imported cssy browser instances
  *
  * @return {Object}
  *         Cssy browser instance
  */
-module.exports = function(src, imports) {
+function createCssyBrowser(src, imports) {
+
+  imports = imports || [];
 
   var changeListeners = [];
+
 
   /**
    * CssyBrowser is the object exported by a module handled by cssy:
@@ -57,18 +63,32 @@ module.exports = function(src, imports) {
    * @return {Object}
    *         An object with:
    *         - `element` **{HTMLElement}**: The `style` element inserted
-   *         - `imported` **{Array}**: The other CssyBrowser instances imported
+   *         - `children` **{Array}**: The other CssyBrowser instances imported
    *           and injected by this instance
    *         - `remove` **{Function}**: Remove injected `style` element and all
    *           other CssyBrowser instances imported
    */
   CssyBrowser.insert = function(to, media) {
 
-    var imported = imports.map(function(imp) {
-      // TODO: What if imp.cssy is not a cssy browser instance
-      // TODO: 'media and ('+imp.media+')' ?
-      var sub = imp.cssy(to, imp.media);
-      return sub;
+    var children = imports.map(function(imp) {
+      var submodule = imp.module;
+
+      var submedia  = [];
+      if(media)     { submedia.push(media) }
+      if(imp.media) { submedia.push(imp.media) }
+      submedia = submedia.join(' and ')
+
+      if('function' == typeof(submodule.insert)) {
+        child = submodule.insert( to, submedia )
+      } else if('function' == typeof(submodule.toString)) {
+        // A string or any thing that provide a string
+        // we crate and inject a new CssyBrowser instance.
+        // As this module is not bundler with cssy's transform
+        // we can not provide live source update.
+        child = createCssyBrowser(submodule.toString()).insert( to, submedia )
+      }
+
+      return child;
     })
 
     var element = document.createElement('style');
@@ -92,8 +112,8 @@ module.exports = function(src, imports) {
       try {
         element.parentNode.removeChild(element);
       } catch(e) {}
-      imported.forEach(function(sub) {
-        sub.remove();
+      children.forEach(function(child) {
+        child.remove();
       })
       return CssyBrowser;
     }
@@ -104,7 +124,7 @@ module.exports = function(src, imports) {
 
     return {
       element:  element,
-      imported: imported,
+      children: children,
       remove:   remove
     }
   }

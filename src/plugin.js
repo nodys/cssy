@@ -3,7 +3,7 @@
 module.exports = function(b, config) {
 
   var cssy   = require('./cssy')
-  var nocssy = require('./nocssy')
+  var remedy = require('./remedy')
 
   // Read configuration:
   cssy.pre(config.pre   || []);
@@ -21,8 +21,8 @@ module.exports = function(b, config) {
     cssy.config({sourcemap: config.sourcemap});
   }
 
-  if(config.nocssy) {
-    b.plugin(nocssy, config.nocssy)
+  if(config.remedy) {
+    b.plugin(remedy, config.remedy)
   }
 
 }

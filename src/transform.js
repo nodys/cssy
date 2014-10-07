@@ -28,7 +28,7 @@ module.exports = function (filename, config) {
         if(err) return done(err);
 
         var imports  = result.imports.map(function(imp) {
-          return '{ cssy: require("'+imp.path+'"), media:"'+imp.media+'"}';
+          return '{ module: require("'+imp.path+'"), media:"'+imp.media+'"}';
         }).join(',')
 
         var browserPath = pathRelative(dirname(filename), pathResolve(__dirname, './cssy-browser.js'))
