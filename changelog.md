@@ -1,6 +1,21 @@
 Changelog
 =========
 
+v0.3.0 - Heavy Giraffe (2014-10-07) 
+----------------------------------------------------------------------
+
+  - doc: Update travis badge url
+  - doc: Add meta-css language notice
+  - refactor: Change github repository
+  - refactor: Rename src folder to lib
+  - refactor: Stabilize remedy behavior
+  - refactor: new plugin name "remedy" (for dependency without cssy)
+  - test: No cssy stuff and remedy plugin
+  - test: Add more test for plugin usage
+  - feat: @import now support any kind of module that can return a css source
+  - feat: Now support css module from package that does not export css as module.
+
+
 v0.2.0 - Didactic Alligator (2014-10-03) 
 ----------------------------------------------------------------------
 
