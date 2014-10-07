@@ -136,18 +136,20 @@ module.exports = function (ctx) {
 }
 ```
 
+## Css meta-language: sass, stylus, less, ...
+
+Cssy provide [parsers for common css meta-languages](./src/parsers). But, cssy does not depend on them so you can install only what you use, and control version according to you needs. For instance, to use less sources with cssy, add [less](https://www.npmjs.org/package/less) to your package dependencies (`npm install --save less`).
+
+If you need something more specific, you may add your own parser.
+
 ## Parser
 
-
 Parser's job is to read a source from any format (sass, stylus, less, *whatever*), and to return a **css source** and a **source-map**.
-
-**Cssy now how to handle most of the sources: css, sass, stylus and less.** But if you need something more specific, you may provide your own parser.
 
 - Parsers use the [same api](#functions) than any other function used in cssy
 - See [options.parser](#options) to add your own parser before cssy's parsers
 - See [cssy's parsers for common css meta-languages](./src/parsers) as example.
 - Parser are executed in series, until one return a context with a source-map.
-
 
 ## Processor
 
