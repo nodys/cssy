@@ -1,7 +1,7 @@
 /* jshint undef: false, unused: false */
 
 var expect = require('expect.js')
-var utils  = (process.env.COVERAGE ? require('../src-cov/utils.js') : require('../src/utils.js'))
+var utils  = (process.env.COVERAGE ? require('../lib-cov/utils.js') : require('../lib/utils.js'))
 var fixp   = require('./support').fixp
 var resolve = require('path').resolve
 

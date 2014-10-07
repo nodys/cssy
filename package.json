@@ -8,7 +8,7 @@
     "url": "https://github.com/nopnop/cssy.git"
   },
   "licenses": "MIT",
-  "main": "./src/cssy.js",
+  "main": "./lib/cssy.js",
   "engines": {
     "node": ">= 0.10"
   },
@@ -17,7 +17,7 @@
     "spec": "mocha --reporter spec",
     "monitor": "mocha --reporter spec --watch",
     "debugtest": "node-debug _mocha",
-    "coverage": "rm -rf ./src-cov && jscoverage ./src ./src-cov && COVERAGE=true mocha --reporter html-cov > ./coverage.html || true && rm -rf ./src-cov",
+    "coverage": "rm -rf ./lib-cov && jscoverage ./lib ./lib-cov && COVERAGE=true mocha --reporter html-cov > ./coverage.html || true && rm -rf ./lib-cov",
     "jshint": "./node_modules/.bin/jshint --exclude node_modules",
     "doc": "./support/updatedoc.js"
   },

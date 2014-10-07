@@ -2,7 +2,7 @@
 
 var expect           = require('expect.js')
 var join             = require('path').join
-var cssy             = (process.env.COVERAGE ? require('../src-cov/cssy.js') : require('../src/cssy.js'))
+var cssy             = (process.env.COVERAGE ? require('../lib-cov/cssy.js') : require('../lib/cssy.js'))
 var processor        = cssy.processor
 var read             = require('fs').readFileSync
 var fixp             = require('./support').fixp

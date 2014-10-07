@@ -1,7 +1,7 @@
 /* jshint undef: false, unused: false */
 
 var expect           = require('expect.js')
-var cssy             = (process.env.COVERAGE ? require('../src-cov/cssy.js') : require('../src/cssy.js'))
+var cssy             = (process.env.COVERAGE ? require('../lib-cov/cssy.js') : require('../lib/cssy.js'))
 var processor        = cssy.processor
 var transform        = cssy.transform
 var read             = require('fs').readFileSync
@@ -36,7 +36,7 @@ describe('cssy transform', function(){
     .pipe(concatStream(function(result) {
       var src = result.toString();
       expect(src).to.contain('module.exports')
-      expect(src).to.contain('require(\'../../../src/cssy-browser.js\')')
+      expect(src).to.contain('require(\'../../../lib/cssy-browser.js\')')
       expect(src).to.contain('body{font-size:14px}')
       done();
     }))
@@ -53,7 +53,7 @@ describe('cssy transform', function(){
     .pipe(concatStream(function(result) {
       var src = result.toString();
       expect(src).to.contain('module.exports')
-      expect(src).to.contain('require(\'../../../src/cssyio.js\')')
+      expect(src).to.contain('require(\'../../../lib/cssyio.js\')')
       expect(src).to.contain('change:test/fixtures/basic/source.css')
       done();
     }))

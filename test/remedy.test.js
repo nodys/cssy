@@ -1,7 +1,7 @@
 /* jshint undef: false, unused: false */
 
 var expect           = require('expect.js')
-var cssy             = (process.env.COVERAGE ? require('../src-cov/cssy.js') : require('../src/cssy.js'))
+var cssy             = (process.env.COVERAGE ? require('../lib-cov/cssy.js') : require('../lib/cssy.js'))
 var processor        = cssy.processor
 var transform        = cssy.transform
 var remedy           = cssy.remedy

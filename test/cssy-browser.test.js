@@ -1,7 +1,7 @@
 /* jshint undef: false, unused: false */
 
 var expect           = require('expect.js')
-var cssy             = (process.env.COVERAGE ? require('../src-cov/cssy.js') : require('../src/cssy.js'))
+var cssy             = (process.env.COVERAGE ? require('../lib-cov/cssy.js') : require('../lib/cssy.js'))
 var read             = require('fs').readFileSync
 var concatStream     = require('concat-stream')
 var jsdom            = require('jsdom')
