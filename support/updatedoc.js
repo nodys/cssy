@@ -11,7 +11,7 @@ var INDENT   = process.env.INDENT ? true : false;
 
 // Run
 async.series({
-  CssyBrowser: flux('../src/cssy-browser.js'),
+  CssyBrowser: flux('../lib/cssy-browser.js'),
   readme:      read('../readme.md'),
 }, function(err, results) {
   fs.writeFile(
