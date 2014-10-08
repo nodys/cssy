@@ -1,6 +1,15 @@
 Changelog
 =========
 
+v0.3.1 - Quick Scorpion (2014-10-08) 
+----------------------------------------------------------------------
+
+  - fix: Missing dependency syntax-error (not a devDependency)
+  - fix: Typo in remedy regex
+  - doc: Fix path to source
+  - doc: Typo
+
+
 v0.3.0 - Heavy Giraffe (2014-10-07) 
 ----------------------------------------------------------------------
 
