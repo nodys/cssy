@@ -370,6 +370,9 @@ bundler.plugin(cssy, { remedy: { processor: 'myprocessor' } })
 
 Remedy options are the same of [the cssy's transform options](#options).
 
+#### Symptoms indicating a need for a remedy
+
+Usually, when browserify encounter a source he can't handle correctly (such css) you see something like `SyntaxError: Unexpected token ILLEGAL`
 
 ---
 
