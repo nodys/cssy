@@ -1,4 +1,4 @@
-# cssy [![Build Status](https://secure.travis-ci.org/limpidjs/cssy.png?branch=master)](http://travis-ci.org/limpidjs/cssy) [![NPM version](https://badge-me.herokuapp.com/api/npm/cssy.png)](http://badges.enytc.com/for/npm/cssy)
+# cssy [![Build Status](https://secure.travis-ci.org/nodys/cssy.png?branch=master)](http://travis-ci.org/nodys/cssy) [![NPM version](https://badge-me.herokuapp.com/api/npm/cssy.png)](http://badges.enytc.com/for/npm/cssy)
 
 > A browserify transform for css (with vitamins): Use css sources **like any other module** but **without forgo** the benefits of **pre-processing** and **live source reload**.
 
