@@ -1,6 +1,14 @@
 Changelog
 =========
 
+v0.3.2 - Candid Squirrel (2014-10-13) 
+----------------------------------------------------------------------
+
+  - doc: Change repository
+  - doc: Add notice about SyntaxError: Unexpected token ILLEGAL
+  - refactor: Change repository
+
+
 v0.3.1 - Quick Scorpion (2014-10-08) 
 ----------------------------------------------------------------------
 
