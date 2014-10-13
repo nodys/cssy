@@ -5,7 +5,7 @@
   "author": "Jean Ponchon <jean.ponchon@novadiscovery.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/limpidjs/cssy.git"
+    "url": "https://github.com/nodys/cssy.git"
   },
   "licenses": "MIT",
   "main": "./lib/cssy.js",
