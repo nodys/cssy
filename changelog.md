@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v0.3.3 - Shy Squirrel (2014-10-23) 
+----------------------------------------------------------------------
+
+  - fix: Do not insert twice the same source in the same parent with the same media query
+
+
 v0.3.2 - Candid Squirrel (2014-10-13) 
 ----------------------------------------------------------------------
 
