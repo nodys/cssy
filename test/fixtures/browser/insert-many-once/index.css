@@ -1,0 +1,5 @@
+@import 'foobar/common.css' tv;
+
+body {
+  font-size: calc(7px * 2);
+}

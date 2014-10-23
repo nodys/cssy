@@ -74,6 +74,12 @@ describe('cssy browser', function(){
   it('.remove() should remove sources and imported sources',
     auto('browser/remove'))
 
+  it('.insert() must insert source only once per media and parent',
+    auto('browser/insert-many-once'))
+
+  it('.remove() must remove sources only when no more instance is required remain',
+    auto('browser/remove-many-once'))
+
   it('.update() should update sources',
     auto('browser/update'))
 
