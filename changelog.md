@@ -1,6 +1,13 @@
 Changelog
 =========
 
+v0.4.0 - Energetic Sheep (2014-10-24) 
+----------------------------------------------------------------------
+
+  - fix: Attach server only once
+  - fix: Use last version of chokidar and update code according to new chokidar requirement
+
+
 v0.3.3 - Shy Squirrel (2014-10-23) 
 ----------------------------------------------------------------------
 
