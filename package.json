@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "async": "^0.9.0",
-    "chokidar": "^0.10.2",
+    "chokidar": "^0.12.6",
     "concat-stream": "^1.4.6",
     "csswring": "^3.0.0",
     "debug": "^2.0.0",
