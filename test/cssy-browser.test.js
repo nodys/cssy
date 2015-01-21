@@ -35,9 +35,13 @@ describe('cssy browser', function(){
     .bundle().pipe(concatStream(function(result) {
       var bundle = result.toString();
       jsdom.env({
-        'html': html.toString(),
-        'src' : [bundle],
-        'done': function(errors, window) {
+        html: html.toString(),
+        src : [bundle],
+        created: function(error, window) {
+          if(error) return callback(error);
+          jsdom.getVirtualConsole(window).sendTo(console)
+        },
+        done: function(errors, window) {
           if(errors && errors.length)  {
             return callback(readJsdomError(errors));
           }
