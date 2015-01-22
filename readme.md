@@ -12,7 +12,7 @@ myCss.onChange(function(css) { }) // Watch for change (hey, you like live source
 console.log('Source: %s', myCss)  // Use as a string
 ```
 
-See [exemple](./exemples)
+See [exemple with cssy, htmly and lrio](https://github.com/nodys/cssy/tree/master/exemples)
 
 ## Features
 
