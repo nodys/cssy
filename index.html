@@ -1,0 +1,603 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Cssy by nodys</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Cssy</h1>
+        <p>require(&#39;foo.css&#39;) - A browserify transform for css (with vitamins): Use css sources like any other module but without forgo the benefits of pre-processing and live source reload.</p>
+
+        <p class="view"><a href="https://github.com/nodys/cssy">View the Project on GitHub <small>nodys/cssy</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/nodys/cssy/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/nodys/cssy/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/nodys/cssy">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="cssy--" class="anchor" href="#cssy--" aria-hidden="true"><span class="octicon octicon-link"></span></a>cssy <a href="http://travis-ci.org/nodys/cssy"><img src="https://secure.travis-ci.org/nodys/cssy.png?branch=master" alt="Build Status"></a> <a href="http://badges.enytc.com/for/npm/cssy"><img src="https://badge-me.herokuapp.com/api/npm/cssy.png" alt="NPM version"></a>
+</h1>
+
+<blockquote>
+<p>A browserify transform for css (with vitamins): Use css sources <strong>like any other module</strong> but <strong>without forgo</strong> the benefits of <strong>pre-processing</strong> and <strong>live source reload</strong>.</p>
+</blockquote>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> myCss <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>foo/my.css<span class="pl-pds">'</span></span>)
+myCss()                           <span class="pl-c">// Inject the css in document</span>
+myCss(elsewhere)                  <span class="pl-c">// To inject css elsewhere</span>
+myCss(elsewhere, <span class="pl-s1"><span class="pl-pds">'</span>tv<span class="pl-pds">'</span></span>)            <span class="pl-c">// Media query...</span>
+myCss.update(<span class="pl-s1"><span class="pl-pds">'</span>h1 { }<span class="pl-pds">'</span></span>)            <span class="pl-c">// Update source for all injected instances</span>
+myCss.<span class="pl-s3">onChange</span>(<span class="pl-st">function</span>(<span class="pl-vpf">css</span>) { }) <span class="pl-c">// Watch for change (hey, you like live source reload ?)</span>
+<span class="pl-en">console</span><span class="pl-s3">.log</span>(<span class="pl-s1"><span class="pl-pds">'</span>Source: %s<span class="pl-pds">'</span></span>, myCss)  <span class="pl-c">// Use as a string</span></pre></div>
+
+<p>See <a href="./exemples">cssy, htmly and lrio exemple</a></p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>
+<strong>Require css as any other commonjs module</strong>: <code>require('foo/common.css')</code>.</li>
+<li>
+<strong>Pre/post processing</strong>: Cssy is framework-agnostic:
+
+<ul>
+<li>Use any  <a href="https://developer.chrome.com/devtools/docs/css-preprocessors">post/pre-processor</a> you like (<a href="https://github.com/reworkcss/rework">rework</a>, <a href="https://github.com/postcss/postcss">postcss</a>,  <a href="http://lesscss.org/">less</a>, <a href="http://sass-lang.com/">sass</a>, etc.)</li>
+<li>At package level, you encapsulate your <em>css secret cooking</em> and export only standard css.</li>
+<li>At application level you can do <strong>global processing</strong> for things like global <code>url()</code> rebasing.</li>
+</ul>
+</li>
+<li>
+<strong>A nice API to read, insert, update or remove</strong>: Use the exported css wherever you want and as you like.</li>
+<li>
+<strong><a href="https://github.com/import" class="user-mention">@import</a></strong>: If enabled, the css at-rule <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@import">@import</a> <code>require()</code> and inject another css module for you.</li>
+<li>
+<strong>Source map</strong>: If enabled, cssy inject a <a href="https://developer.chrome.com/devtools/docs/css-preprocessors">source map</a>.</li>
+<li>
+<strong>Live source reload</strong>: Provide a simple http(s) server hook reload seamlessly css source in development environnement.</li>
+<li>
+<strong>Regex filter</strong>: Configurable, you can apply cssy's transform selectively</li>
+<li>
+<strong>Plugin</strong>: Use <a href="#cssy-plugin">cssy as a plugin</a> at application level to configure cssy finely</li>
+<li>
+<strong>Remedy</strong>: Enable <a href="#remedy">cssy remedy</a> to handle package that does not export css as commonjs module</li>
+</ul>
+
+<p>Want a nice cocktail recipe ? Use <strong>source map</strong> in combination with cssy's <strong>live source reload feature</strong> and chrome's <a href="https://developer.chrome.com/devtools/docs/workspaces">in-browser edition</a>.</p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<div class="highlight highlight-bash"><pre>npm install --save cssy</pre></div>
+
+<p><strong>Then add cssy transform to your <code>package.json</code></strong>. Encapsulate your css processing logic inside your package: use <a href="https://github.com/substack/browserify-handbook#browserifytransform-field">browserify.transform field</a>.</p>
+
+<div class="highlight highlight-javascript"><pre>{
+  <span class="pl-c">// ...</span>
+  <span class="pl-s1"><span class="pl-pds">"</span>browserify<span class="pl-pds">"</span></span><span class="pl-k">:</span> { <span class="pl-s1"><span class="pl-pds">"</span>transform<span class="pl-pds">"</span></span><span class="pl-k">:</span> [ <span class="pl-s1"><span class="pl-pds">"</span>cssy<span class="pl-pds">"</span></span> ] ] }
+}</pre></div>
+
+<h2>
+<a id="options" class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Options</h2>
+
+<p>In you <code>package.json</code> you can add some options for the current package (<code>[ "cssy", {  /* options */ } ]</code>)</p>
+
+<ul>
+<li>
+<code>parser</code> <strong>{Array|String}</strong>: One or many path to module that export a <a href="#parser">parser</a>
+</li>
+<li>
+<code>processor</code> <strong>{Array|String}</strong>: One or many path to module that export a <a href="#processor">Css processor</a>
+</li>
+<li>
+<code>import</code> <strong>{Boolean}</strong>: Allow <a href="#import-css">@import</a> behavior (default: true)</li>
+<li>
+<code>match</code> <strong>{String|Array}</strong>: Filter which file cssy must handle. See <a href="#regex-filter">Regex filter</a>
+</li>
+</ul>
+
+<p>Path inside <code>parser</code> and <code>processor</code> options are either relative to package.json or npm package.</p>
+
+<p><strong>Example:</strong></p>
+
+<div class="highlight highlight-javascript"><pre>
+  <span class="pl-c">// ...</span>
+  <span class="pl-s1"><span class="pl-pds">"</span>browserify<span class="pl-pds">"</span></span><span class="pl-k">:</span> { <span class="pl-s1"><span class="pl-pds">"</span>transform<span class="pl-pds">"</span></span><span class="pl-k">:</span> [
+    [ <span class="pl-s1"><span class="pl-pds">"</span>cssy<span class="pl-pds">"</span></span>,
+      {  
+        <span class="pl-s1"><span class="pl-pds">"</span>parser<span class="pl-pds">"</span></span>   <span class="pl-k">:</span> [
+          <span class="pl-s1"><span class="pl-pds">"</span>./mySassParser<span class="pl-pds">"</span></span>,
+          <span class="pl-s1"><span class="pl-pds">"</span>./myLessParser<span class="pl-pds">"</span></span>
+        ],
+        <span class="pl-s1"><span class="pl-pds">"</span>processor<span class="pl-pds">"</span></span><span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">"</span>./support/myCssProcessor<span class="pl-pds">"</span></span>,
+        <span class="pl-s1"><span class="pl-pds">"</span>import<span class="pl-pds">"</span></span>   <span class="pl-k">:</span> <span class="pl-c1">false</span>,
+        <span class="pl-s1"><span class="pl-pds">"</span>match<span class="pl-pds">"</span></span>    <span class="pl-k">:</span> [<span class="pl-s1"><span class="pl-pds">"</span><span class="pl-cce">\\</span>.(css|mycss)$<span class="pl-pds">"</span></span>,i]
+      }
+    ]
+  ]}
+</pre></div>
+
+<h2>
+<a id="global-configuration" class="anchor" href="#global-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Global configuration</h2>
+
+<p>At <em>application level</em> you can change some <em>global</em> cssy behaviors</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> cssy <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>cssy<span class="pl-pds">'</span></span>)
+cssy.config({
+  <span class="pl-c">// Enable css minification (default: false)</span>
+  minify<span class="pl-k">:</span>  <span class="pl-c1">false</span>,
+  <span class="pl-c">// Enable source map in the generated source (default: true)</span>
+  sourcemap<span class="pl-k">:</span> <span class="pl-c1">true</span>
+})</pre></div>
+
+<p><em>Css minification is done with <a href="https://github.com/hail2u/node-csswring">CSSWring</a>. Feel free to use another one inside a <a href="#global-prepost-processor">global post-processor</a>.</em></p>
+
+<h2>
+<a id="internal-workflow" class="anchor" href="#internal-workflow" aria-hidden="true"><span class="octicon octicon-link"></span></a>Internal workflow</h2>
+
+<ol>
+<li>
+<strong>Parser</strong> Cssy try each <a href="#parser">parser</a> to transform any kind of source to css (from stylus, less, sass, etc.) with a source map.</li>
+<li>
+<strong>Global pre-processor</strong>: Cssy call each <a href="#global-prepost-processor">Global pre-processor</a>
+</li>
+<li>
+<strong>processor</strong>: Cssy call each <a href="#processor">local processor</a>
+</li>
+<li>
+<strong>Global post-processor</strong>: Cssy call each <a href="#global-prepost-processor">Global post-processor</a>
+</li>
+<li>
+<strong><a href="https://github.com/import" class="user-mention">@import</a></strong>: If enable cssy extract <code>@import</code> at-rules (see <a href="#import-css">Import css</a>)</li>
+<li>
+<strong>minify</strong>: If enable cssy minify css source</li>
+<li>
+<strong>source map</strong>: If enable cssy add the source-map</li>
+<li>
+<strong>live reload</strong>: If enable cssy add live source reload client to the generated bundle</li>
+</ol>
+
+<h2>
+<a id="context-object" class="anchor" href="#context-object" aria-hidden="true"><span class="octicon octicon-link"></span></a>Context object</h2>
+
+<p>Each function that transform a css source (<a href="#parser">parser</a>, <a href="#global-prepost-processor">global pre/post processor</a>, <a href="#processor">processor</a>), receive a <strong>context object</strong>:</p>
+
+<ul>
+<li>
+<code>src</code> <strong>{String}</strong>: Css source</li>
+<li>
+<code>filename</code> <strong>{String}</strong>: Css source filepath (relative to <code>process.cwd()</code>)</li>
+<li>
+<code>config</code> <strong>{Object}</strong>: The cssy's <a href="https://github.com/substack/browserify-handbook#configuring-transforms">transform configuration</a>
+</li>
+<li>
+<code>map</code> <strong>{Object}</strong>: The <a href="https://www.google.com/search?q=Source+Map+Revision+3+proposal">css source map</a> (undefined for the <a href="#parser">parsers</a>: as they must provide it)</li>
+</ul>
+
+<h2>
+<a id="functions" class="anchor" href="#functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Functions</h2>
+
+<p>Each function used in cssy (<a href="#parser">parser</a>, <a href="#global-prepost-processor">global pre/post processor</a>, <a href="#processor">processor</a>) use the same API and <strong>may be asynchronous or synchronous</strong>.</p>
+
+<div class="highlight highlight-javascript"><pre>
+<span class="pl-c">// Asynchronous parser, processor, pre/post processor:</span>
+<span class="pl-s3">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-st">function</span> (<span class="pl-vpf">ctx</span>, <span class="pl-vpf">done</span>) {
+  <span class="pl-c">// ... change the ctx object ...</span>
+
+  <span class="pl-c">// Return ctx</span>
+  done(<span class="pl-c1">null</span>, ctx)
+
+  <span class="pl-c">// Or if something wrong happened</span>
+  done(<span class="pl-k">new</span> <span class="pl-en">Error</span>(<span class="pl-s1"><span class="pl-pds">'</span>oups...<span class="pl-pds">'</span></span>))
+}
+
+<span class="pl-c">// Synchronous parser, processor, pre/post processor:</span>
+<span class="pl-s3">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-st">function</span> (<span class="pl-vpf">ctx</span>) {
+  <span class="pl-c">// ... change the ctx object ...</span>
+  <span class="pl-k">return</span> ctx;
+}</pre></div>
+
+<h2>
+<a id="css-meta-language-sass-stylus-less-" class="anchor" href="#css-meta-language-sass-stylus-less-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Css meta-language: sass, stylus, less, ...</h2>
+
+<p>Cssy provide <a href="./src/parsers">parsers for common css meta-languages</a>. But, cssy does not depend on them so you can install only what you use, and control version according to you needs. For instance, to use less sources with cssy, add <a href="https://www.npmjs.org/package/less">less</a> to your package dependencies (<code>npm install --save less</code>).</p>
+
+<p>If you need something more specific, you may add your own parser.</p>
+
+<h2>
+<a id="parser" class="anchor" href="#parser" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parser</h2>
+
+<p>Parser's job is to read a source from any format (sass, stylus, less, <em>whatever</em>), and to return a <strong>css source</strong> and a <strong>source-map</strong>.</p>
+
+<ul>
+<li>Parsers use the <a href="#functions">same api</a> than any other function used in cssy</li>
+<li>See <a href="#options">options.parser</a> to add your own parser before cssy's parsers</li>
+<li>See <a href="./src/parsers">cssy's parsers for common css meta-languages</a> as example.</li>
+<li>Parser are executed in series, until one return a context with a source-map.</li>
+</ul>
+
+<h2>
+<a id="processor" class="anchor" href="#processor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Processor</h2>
+
+<p>For cssy, a <em>processor</em> is an function that transform a <a href="#cssy-context-object">cssy context object</a> to another <a href="#cssy-context-object">cssy context object</a>. Like for <a href="https://github.com/substack/node-browserify#btransformopts-tr">browserify's transform</a> cssy processor are applied <strong>only on the sources of the current package</strong>. (See too <a href="#Global%20pre/post%20processor">Global pre/post processor</a>)</p>
+
+<ul>
+<li>Parsers use the <a href="#functions">same api</a> than any other function used in cssy</li>
+<li>See <a href="#options">options.processor</a> to add one or many processor</li>
+</ul>
+
+<h3>
+<a id="processor-example" class="anchor" href="#processor-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Processor example</h3>
+
+<p>Here with <a href="https://github.com/postcss/postcss">postcss</a> but you can use any other library (Preferably with good source-map support)</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> autoprefixer     <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>autoprefixer<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> postcssCalc      <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>postcss-calc<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> customProperties <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">"</span>postcss-custom-properties<span class="pl-pds">"</span></span>)
+<span class="pl-s">var</span> postcss          <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>postcss<span class="pl-pds">'</span></span>);
+
+<span class="pl-s3">module</span>.<span class="pl-en">exports</span> <span class="pl-k">=</span> <span class="pl-st">function</span>(<span class="pl-vpf">ctx</span>, <span class="pl-vpf">done</span>) {
+  <span class="pl-s">var</span> result <span class="pl-k">=</span> postcss()
+    .use(customProperties())
+    .use(postcssCalc())
+    .use(autoprefixer.postcss)
+    .process(ctx.<span class="pl-sc">src</span>, {
+      map <span class="pl-k">:</span> { prev <span class="pl-k">:</span> ctx.map } <span class="pl-c">// Preserve source map !</span>
+    });
+
+  ctx.<span class="pl-sc">src</span> <span class="pl-k">=</span> result.css;
+  ctx.map <span class="pl-k">=</span> result.map.toJSON();
+
+  done(<span class="pl-c1">null</span>, ctx)
+}</pre></div>
+
+<h2>
+<a id="global-prepost-processor" class="anchor" href="#global-prepost-processor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Global pre/post processor</h2>
+
+<p>Global pre/post processor must be used only at <em>application level</em> (where you bundle your application) for things like global <code>url()</code> rebasing, optimizations for production, etc. Pre/post processor share the same api than <a href="#processor">cssy processor</a>.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> cssy <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>cssy<span class="pl-pds">'</span></span>)
+
+<span class="pl-c">// Add one or many pre-processors</span>
+cssy.pre(<span class="pl-st">function</span>(<span class="pl-vpf">ctx</span>, <span class="pl-vpf">done</span>) {
+  <span class="pl-c">// ... Applied on every source handled by cssy</span>
+})
+
+<span class="pl-c">// Add one or many post-processors</span>
+cssy.post(<span class="pl-st">function</span>(<span class="pl-vpf">ctx</span>, <span class="pl-vpf">done</span>) {
+  <span class="pl-c">// ... Applied on every source handled by cssy</span>
+})
+</pre></div>
+
+<p>See too <a href="#cssy-plugin">use cssy plugin to add pre/post processor</a></p>
+
+<h2>
+<a id="live-source-reload" class="anchor" href="#live-source-reload" aria-hidden="true"><span class="octicon octicon-link"></span></a>Live source reload</h2>
+
+<p><strong>Cssy provide a tiny live source reload mechanism based on websocket for development purpose only.</strong></p>
+
+<p>Classic live source reload for css usually require that all (builded) css source are accessible via an url. This is not convenient with bundled css sources that comes from anywhere in the dependency tree. And this is almost impraticable if css sources are injected somewhere else than the main document (shadow root for instance) without reloading all the page.</p>
+
+<p><strong>Just attach cssy to the http(s) server that serve the application, cssy will do the rest:</strong> (browserify bundler must in the same process):</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> http   <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>http<span class="pl-pds">'</span></span>)
+<span class="pl-s">var</span> cssy   <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>cssy<span class="pl-pds">'</span></span>)
+<span class="pl-s">var</span> server <span class="pl-k">=</span> http.createServer(<span class="pl-c">/* your application */</span>).listen(<span class="pl-c1">8080</span>);
+
+cssy.live(server);</pre></div>
+
+<h3>
+<a id="use-your-own-file-watcher" class="anchor" href="#use-your-own-file-watcher" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use your own file watcher</h3>
+
+<p>To trigger a change on a css source, just call the change listener returned by <code>cssy.attachServer()</code> :</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> cssyChangeListener <span class="pl-k">=</span> cssy.attachServer(server);
+cssyChangeListener(<span class="pl-s1"><span class="pl-pds">'</span>path/to/source.css<span class="pl-pds">'</span></span>);</pre></div>
+
+<p>Here is an example with <a href="https://github.com/paulmillr/chokidar">chockidar</a> :</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>chokidar<span class="pl-pds">'</span></span>)
+  .<span class="pl-s3">watch</span>(<span class="pl-s1"><span class="pl-pds">'</span>.<span class="pl-pds">'</span></span>, {ignored<span class="pl-k">:</span><span class="pl-sr"> <span class="pl-pds">/</span><span class="pl-c1">[<span class="pl-cce">\/\\</span>]</span><span class="pl-cce">\.</span><span class="pl-pds">/</span></span>})
+  .on(<span class="pl-s1"><span class="pl-pds">'</span>change<span class="pl-pds">'</span></span>, cssy.attachServer(server))</pre></div>
+
+<h2>
+<a id="import-css" class="anchor" href="#import-css" aria-hidden="true"><span class="octicon octicon-link"></span></a>Import css</h2>
+
+<p>Unless you set the <a href="#options">import option</a> to false, <code>@import</code> <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule">at-rules</a> works like a <code>require()</code>.</p>
+
+<p>For instance with two css file, <code>app.css</code> and <code>print.css</code>:</p>
+
+<div class="highlight highlight-css"><pre><span class="pl-c">/* app.css */</span>
+<span class="pl-k">@import</span> <span class="pl-s1"><span class="pl-pds">"</span>print.css<span class="pl-pds">"</span></span> <span class="pl-sc">print</span>;
+<span class="pl-ent">body</span> { <span class="pl-c">/* ... */</span> }</pre></div>
+
+<div class="highlight highlight-css"><pre><span class="pl-c">/* print.css */</span>
+<span class="pl-e">.not-printable</span> { <span class="pl-mp"><span class="pl-s3">display</span></span>: <span class="pl-sc">none</span> }</pre></div>
+
+<p>When you inject <code>app.css</code>, <code>print.css</code> will be injected too with the media query <code>print</code></p>
+
+<h2>
+<a id="regex-filter" class="anchor" href="#regex-filter" aria-hidden="true"><span class="octicon octicon-link"></span></a>Regex filter</h2>
+
+<p>Default filter is all css files and most meta-css-language files: <code>/\.(css|sass|scss|less|styl)$/i</code>. You can set the <a href="#options">match option</a> to filter which file cssy must handle.</p>
+
+<p><code>match</code> option is either a String or an Array used to instantiate a new <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions">regular expression</a>:</p>
+
+<ul>
+<li>With a string <code>"\\.myCss$"</code> become <code>/\.myCss$/</code>
+</li>
+<li>With an array, to add regular expression flags <code>["\\.myCss$","i"]</code> become <code>/\.myCss$/i</code>
+</li>
+</ul>
+
+<div class="highlight highlight-javascript"><pre>{
+  <span class="pl-c">// ... package.json ...</span>
+  <span class="pl-s1"><span class="pl-pds">"</span>browserify<span class="pl-pds">"</span></span><span class="pl-k">:</span> {
+    <span class="pl-s1"><span class="pl-pds">"</span>transform<span class="pl-pds">"</span></span><span class="pl-k">:</span> [
+      <span class="pl-c">// Match all *.mycss files in src/css</span>
+      [ <span class="pl-s1"><span class="pl-pds">"</span>cssy<span class="pl-pds">"</span></span>, {  match<span class="pl-k">:</span> [<span class="pl-s1"><span class="pl-pds">"</span>src<span class="pl-cce">\\</span>/css<span class="pl-cce">\\</span>/.*<span class="pl-cce">\\</span>.mycss$<span class="pl-pds">"</span></span>,<span class="pl-s1"><span class="pl-pds">"</span>i<span class="pl-pds">"</span></span>] } ]
+    ]
+  }
+}</pre></div>
+
+<h2>
+<a id="cssy-plugin" class="anchor" href="#cssy-plugin" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cssy plugin</h2>
+
+<p>Cssy can be used as a browserify plugin to set global behaviors:</p>
+
+<h4>
+<a id="using-browserify-api" class="anchor" href="#using-browserify-api" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using browserify api</h4>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> browserify <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>browserify<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> cssy       <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>cssy<span class="pl-pds">'</span></span>);
+<span class="pl-s">var</span> b <span class="pl-k">=</span> browserify(<span class="pl-s1"><span class="pl-pds">'</span>./app.css<span class="pl-pds">'</span></span>)
+b.plugin(cssy, {
+  <span class="pl-c">// Global configuration:</span>
+  minify<span class="pl-k">:</span>    <span class="pl-c1">true</span>,
+  sourcemap<span class="pl-k">:</span> <span class="pl-c1">false</span>,
+
+  <span class="pl-c">// See live source reload:</span>
+  live<span class="pl-k">:</span> myHttpServerInstance,
+
+  <span class="pl-c">// See pre/post processor (function or path to a processor module):</span>
+  pre<span class="pl-k">:</span>  [
+    <span class="pl-s1"><span class="pl-pds">'</span>./myPreprocessor<span class="pl-pds">'</span></span>,
+    <span class="pl-st">function</span> <span class="pl-en">anotherPreprocessor</span>(<span class="pl-vpf">ctx</span>) { <span class="pl-k">return</span> ctx }
+  ],
+  post<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>post-processor<span class="pl-pds">'</span></span>,
+
+  <span class="pl-c">// See remedy:</span>
+  <span class="pl-c">//   - Use current package cssy config:</span>
+  remedy<span class="pl-k">:</span> <span class="pl-c1">true</span>,
+  <span class="pl-c">//   - Use set remedy config:</span>
+  remedy<span class="pl-k">:</span> {
+    processor<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>./processor<span class="pl-pds">'</span></span> <span class="pl-c">// (function or path to a processor module)</span>
+    match<span class="pl-k">:</span><span class="pl-sr">     <span class="pl-pds">/</span>css<span class="pl-k">$</span><span class="pl-pds">/</span>i</span>,
+    import<span class="pl-k">:</span>    <span class="pl-c1">false</span>
+  }
+})
+</pre></div>
+
+<h4>
+<a id="using-browserify-command" class="anchor" href="#using-browserify-command" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using browserify command</h4>
+
+<p>Browserify use <a href="https://www.npmjs.org/package/subarg">subarg</a> syntaxe. See too <a href="https://github.com/substack/node-browserify#plugins">browserify plugin</a></p>
+
+<div class="highlight highlight-sh"><pre>browserify ./app.css -p [                                 \
+  cssy                                                    \
+    --minify                                              \
+    --no-sourcemap                 <span class="pl-c"># sourcemap = false    \</span>
+    --live <span class="pl-s1"><span class="pl-pds">'</span>./server.js<span class="pl-pds">'</span></span>                                  \
+    --pre  <span class="pl-s1"><span class="pl-pds">'</span>./myPreprocessor<span class="pl-pds">'</span></span>                             \
+    --pre  <span class="pl-s1"><span class="pl-pds">'</span>another-preprocessor<span class="pl-pds">'</span></span>  <span class="pl-c"># repeat for an array  \</span>
+    --post <span class="pl-s1"><span class="pl-pds">'</span>post-processor<span class="pl-pds">'</span></span>                               \
+    --remedy                       <span class="pl-c"># enable remedy ...    \</span>
+    --remedy [                     <span class="pl-c"># ... or use subarg    \</span>
+      --processor <span class="pl-s1"><span class="pl-pds">'</span>./processor<span class="pl-pds">'</span></span>                           \
+      --no-import                                         \
+      --match <span class="pl-s1"><span class="pl-pds">'</span>css$<span class="pl-pds">'</span></span> --match <span class="pl-s1"><span class="pl-pds">'</span>i<span class="pl-pds">'</span></span>                          \
+    ]                                                     \
+]</pre></div>
+
+<h2>
+<a id="remedy" class="anchor" href="#remedy" aria-hidden="true"><span class="octicon octicon-link"></span></a>Remedy</h2>
+
+<p><strong>Cssy's remedy is a solution to use libraries that does not export their css sources as commonjs modules</strong></p>
+
+<p>Browserify transforms are scoped to the current package, not its dependency: and that's a good thing !</p>
+
+<blockquote>
+<p><em><a href="https://github.com/substack/module-deps#transforms">From module-deps readme:</a></em> (...) the transformations you specify will not be run for any files in node_modules/. This is because modules you include should be self-contained and not need to worry about guarding themselves against transformations that may happen upstream.</p>
+</blockquote>
+
+<p><strong>However</strong>, if you want to use some parts of a library like <a href="https://github.com/Semantic-Org/Semantic-UI">semantic-ui</a>, cssy provide a solution <strong>at application level</strong> (where you bundle your application): the <strong>remedy</strong> global transform.</p>
+
+<h4>
+<a id="enable-remedy" class="anchor" href="#enable-remedy" aria-hidden="true"><span class="octicon octicon-link"></span></a>Enable remedy:</h4>
+
+<p>If remedy options is <code>true</code> cssy will use the cssy configuration from the <code>package.json</code> closest to the current working directory :</p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// Add remedy to a browserify instance (bundler)</span>
+bundler.plugin(cssy, { remedy<span class="pl-k">:</span> <span class="pl-c1">true</span> })</pre></div>
+
+<p>But you can set specific options has described in the <a href="#cssy-plugin">cssy plugin section</a></p>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-c">// Add remedy to a browserify instance (bundler)</span>
+bundler.plugin(cssy, { remedy<span class="pl-k">:</span> { processor<span class="pl-k">:</span> <span class="pl-s1"><span class="pl-pds">'</span>myprocessor<span class="pl-pds">'</span></span> } })</pre></div>
+
+<h4>
+<a id="remedy-options" class="anchor" href="#remedy-options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Remedy options:</h4>
+
+<p>Remedy options are the same of <a href="#options">the cssy's transform options</a>.</p>
+
+<h4>
+<a id="symptoms-indicating-a-need-for-a-remedy" class="anchor" href="#symptoms-indicating-a-need-for-a-remedy" aria-hidden="true"><span class="octicon octicon-link"></span></a>Symptoms indicating a need for a remedy</h4>
+
+<p>Usually, when browserify encounter a source he can't handle correctly (such css) you see something like <code>SyntaxError: Unexpected token ILLEGAL</code></p>
+
+<hr>
+
+<h1>
+<a id="cssybrowser-api" class="anchor" href="#cssybrowser-api" aria-hidden="true"><span class="octicon octicon-link"></span></a>CssyBrowser API</h1>
+
+
+
+<h2>
+<a id="cssybrowser" class="anchor" href="#cssybrowser" aria-hidden="true"><span class="octicon octicon-link"></span></a>CssyBrowser()</h2>
+
+<blockquote>
+<p>CssyBrowser is the object exported by a module handled by cssy:</p>
+</blockquote>
+
+<div class="highlight highlight-javascript"><pre><span class="pl-s">var</span> myCss <span class="pl-k">=</span> <span class="pl-s3">require</span>(<span class="pl-s1"><span class="pl-pds">'</span>./my.css<span class="pl-pds">'</span></span>);
+<span class="pl-c">// myCss is a CssyBrowser</span></pre></div>
+
+<p>A CssyBrowser instance can be used as:</p>
+
+<ul>
+<li>
+<strong>An string</strong> when used in a context that imply a string: thanks to
+<code>CssyBrowser.toString()</code> that return the css source.</li>
+<li>
+<strong>A function</strong>, alias of CssyBrowser.insert([to, [media]]), to inject
+the css source in the document: <code>myCss()</code>,
+<code>myCss(element)</code> or <code>myCss(element, 'media query')</code>.</li>
+<li>
+<strong>An object</strong> with the methods described below.</li>
+</ul>
+
+<p><strong>return</strong> {<code>Object</code>}
+See <a href="#cssybrowserinsertto-media">CssyBrowser.insert()</a></p>
+
+<h2>
+<a id="cssybrowserinsertto-media" class="anchor" href="#cssybrowserinsertto-media" aria-hidden="true"><span class="octicon octicon-link"></span></a>CssyBrowser.insert([to], [media])</h2>
+
+<blockquote>
+<p>Insert css source in the DOM</p>
+</blockquote>
+
+<p>Create and append a <code>&lt;style&gt;</code> element in the dom at <code>to</code>. If the source contain
+<code>@import</code> at-rules, imported CssyBrowser modules are injected too.
+The content of all the injected <code>&lt;style&gt;</code> element is binded to css source
+change: When <code>.update()</code> is called by you or by the cssy's live source
+reload server.</p>
+
+<p><strong>Parameters:</strong></p>
+
+<ul>
+<li><p><strong>[to]</strong> {<code>HTMLElement</code>|<code>ShadowRoot</code>}
+Where to inject the style. Default to document's head.</p></li>
+<li><p><strong>[media]</strong> {<code>String</code>}
+Set the media attribute of the injected style tag</p></li>
+</ul>
+
+<p><strong>return</strong> {<code>Object</code>}
+An object with:</p>
+
+<ul>
+<li>
+<code>element</code> <strong>{HTMLElement}</strong>: The <code>style</code> element inserted</li>
+<li>
+<code>children</code> <strong>{Array}</strong>: The other CssyBrowser instances imported
+and injected by this instance</li>
+<li>
+<code>remove</code> <strong>{Function}</strong>: Remove injected <code>style</code> element and all
+other CssyBrowser instances imported
+other CssyBrowser instances imported</li>
+</ul>
+
+<h2>
+<a id="cssybrowserupdatesrc" class="anchor" href="#cssybrowserupdatesrc" aria-hidden="true"><span class="octicon octicon-link"></span></a>CssyBrowser.update(src)</h2>
+
+<blockquote>
+<p>Update current css source</p>
+</blockquote>
+
+<p>Each inject style element are updated too</p>
+
+<p><strong>Parameters:</strong></p>
+
+<ul>
+<li>
+<strong>src</strong> {<code>String</code>}</li>
+</ul>
+
+<h2>
+<a id="cssybrowseronchangelistener" class="anchor" href="#cssybrowseronchangelistener" aria-hidden="true"><span class="octicon octicon-link"></span></a>CssyBrowser.onChange(listener)</h2>
+
+<blockquote>
+<p>Listen for css source changes</p>
+</blockquote>
+
+<p><strong>Parameters:</strong></p>
+
+<ul>
+<li>
+<strong>listener</strong> {<code>Function</code>}
+Change listener. Receive new css source
+Change listener. Receive new css source</li>
+</ul>
+
+<h2>
+<a id="cssybrowseroffchangelistener" class="anchor" href="#cssybrowseroffchangelistener" aria-hidden="true"><span class="octicon octicon-link"></span></a>CssyBrowser.offChange(listener)</h2>
+
+<blockquote>
+<p>Detach change listener</p>
+</blockquote>
+
+<p><strong>Parameters:</strong></p>
+
+<ul>
+<li>
+<strong>listener</strong> {<code>Function</code>}</li>
+</ul>
+
+<h2>
+<a id="cssybrowsergetimports" class="anchor" href="#cssybrowsergetimports" aria-hidden="true"><span class="octicon octicon-link"></span></a>CssyBrowser.getImports()</h2>
+
+<blockquote>
+<p>Get the imported CssyBrowser instance (based on <code>@import</code> at-rules)</p>
+</blockquote>
+
+<p><strong>return</strong> {<code>Array</code>}
+Array of CssyBrowser instance</p>
+
+<h2>
+<a id="cssybrowsertostring" class="anchor" href="#cssybrowsertostring" aria-hidden="true"><span class="octicon octicon-link"></span></a>CssyBrowser.toString()</h2>
+
+<blockquote>
+<p>Override default toString()</p>
+</blockquote>
+
+<p><strong>return</strong> {<code>String</code>}
+The current css source</p>
+
+
+
+<hr>
+
+<p>License: <a href="https://github.com/nodys/cssy/blob/master/LICENSE">The MIT license</a></p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/nodys">nodys</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
