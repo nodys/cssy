@@ -1,6 +1,15 @@
 Changelog
 =========
 
+v1.0.0 - Limpid Dolphin (2015-01-22) 
+----------------------------------------------------------------------
+
+  - doc: Add exemple for cssy + htmly + lrio
+  - fix: Less breaking changes
+  - fix: Handle node-sass breaking changes
+  - test: Fix invalid target element
+
+
 v0.4.0 - Energetic Sheep (2014-10-24) 
 ----------------------------------------------------------------------
 
