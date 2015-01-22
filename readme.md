@@ -12,6 +12,8 @@ myCss.onChange(function(css) { }) // Watch for change (hey, you like live source
 console.log('Source: %s', myCss)  // Use as a string
 ```
 
+See [exemple](./exemples)
+
 ## Features
 
 - **Require css as any other commonjs module**: `require('foo/common.css')`.

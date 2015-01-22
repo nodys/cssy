@@ -1,0 +1,22 @@
+
+#xTag {
+  position        : absolute;
+  left            : -30px;
+  top             : -5px;
+  transform       : rotate(-5deg);
+  display         : block;
+  background      : #0886ac;
+  color           : white;
+  padding         : .2em .5em;
+  transition      : all 300ms ease-in-out;
+  cursor          : pointer;
+  border          : 1px solid white;
+  box-shadow      : 0 0 5px rgba(0,0,0,.3);
+  margin          : 0 .5em;
+  text-decoration : none;
+}
+
+#xTag:hover {
+  background-color: #ac5408;
+  transform       : rotate(5deg);
+}

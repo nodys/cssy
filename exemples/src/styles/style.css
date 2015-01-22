@@ -1,0 +1,39 @@
+@import './style-imported.css';
+
+body {
+  font-family  : sans-serif;
+  padding      : 50px;
+  color        : #333;
+  font-size    : 14px;
+}
+
+.feat {
+  box-shadow    : 0 0 .5em rgba(0,0,0,.3);
+  background    : white;
+  border        : 1px solid #ccc;
+  padding       : 1em;
+  margin-bottom : 1em;
+  position      : relative;
+}
+
+.feat::before {
+  content      : '';
+  display      : block;
+  float        : left;
+  margin-right : 1em;
+  width        : 1em;
+  height       : 1em;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+}
+
+.feat span::before {
+  content     : 'Feat: ';
+  color       : #a29f9f;
+  font-weight : bold;
+}
+
+
+.feat.css::before {
+  background-color: #9dc65c;
+}

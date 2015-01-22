@@ -1,0 +1,46 @@
+{
+  "name": "cssy-exemple",
+  "version": "1.0.0",
+  "description": "Cssy exemple",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "cssy",
+    "exemple"
+  ],
+  "author": "Jean Ponchon <jean.ponchon@novadiscovery.com>",
+  "license": "MIT",
+  "dependencies": {
+    "autoprefixer": "^5.0.0",
+    "browserify": "^8.1.1",
+    "chokidar": "^0.12.6",
+    "cssy": ">=0.4.0",
+    "domready": "^1.0.7",
+    "express": "^4.11.1",
+    "extend": "^2.0.0",
+    "htmly": ">=0.5.0",
+    "less": "^2.2.0",
+    "lrio": ">=1.1.0",
+    "morgan": "^1.5.1",
+    "node-sass": "^2.0.0-beta",
+    "postcss": "^4.0.1",
+    "serve-static": "^1.8.1",
+    "stylus": "^0.49.3",
+    "watchify": "^2.2.1"
+  },
+  "private": true,
+  "browserify": {
+    "transform": [
+      [
+        "cssy",
+        {
+          "processor": ["./lib/cssprocessor.js"]
+        }
+      ],
+      "htmly"
+    ]
+  }
+}
