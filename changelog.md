@@ -1,6 +1,15 @@
 Changelog
 =========
 
+v1.1.0 - Effulgent Panda (2015-05-29) 
+----------------------------------------------------------------------
+
+  - doc: Update api doc
+  - doc: Update badges
+  - doc: Update exemple (upgrade outdated dependencies)
+  - fix: node-sass api breaking changes
+
+
 v1.0.2 - Smart Giraffe (2015-05-17) 
 ----------------------------------------------------------------------
 
