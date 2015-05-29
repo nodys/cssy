@@ -18,7 +18,7 @@
     "monitor": "mocha --reporter spec --watch",
     "debugtest": "node-debug _mocha",
     "coverage": "rm -rf ./lib-cov && jscoverage ./lib ./lib-cov && COVERAGE=true mocha --reporter html-cov > ./coverage.html || true && rm -rf ./lib-cov",
-    "jshint": "./node_modules/.bin/jshint --exclude node_modules",
+    "standard": "./node_modules/.bin/standard",
     "doc": "./support/updatedoc.js"
   },
   "dependencies": {
@@ -42,7 +42,6 @@
     "docflux": "^1.1.2",
     "expect.js": "*",
     "jsdom": "^5.4.3",
-    "jshint": "*",
     "less": "^2.5.1",
     "mocha": "*",
     "node-sass": "^3.1.2",
@@ -51,6 +50,7 @@
     "rework": "^1.0.1",
     "rework-calc": "^1.1.0",
     "rework-vars": "^3.1.1",
+    "standard": "^3.11.1",
     "stylus": "^0.51.1"
   },
   "browser": "./src/cssy-browser.js",
@@ -63,6 +63,11 @@
     "browser",
     "webcomponent"
   ],
+  "standard": {
+    "ignore": [
+      "**/exemples/node_modules/**"
+    ]
+  },
   "publishConfig": {
     "registry": "http://registry.npmjs.org/"
   }

@@ -1,5 +1,5 @@
 module.exports = {
-  on: function() {
-    process._cssy_live = true;
+  on: function () {
+    process._cssy_live = true
   }
 }

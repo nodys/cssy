@@ -1,33 +1,28 @@
-/* jshint undef: false, unused: false */
+/* global describe it beforeEach */
 
-var expect           = require('expect.js')
-var cssy             = (process.env.COVERAGE ? require('../lib-cov/cssy.js') : require('../lib/cssy.js'))
-var processor        = cssy.processor
-var transform        = cssy.transform
-var read             = require('fs').readFileSync
-var createReadStream = require('fs').createReadStream
-var concatStream     = require('concat-stream')
-var EventEmitter     = require('events').EventEmitter
-var fixp             = require('./support').fixp
+var expect = require('expect.js')
+var cssy = (process.env.COVERAGE ? require('../lib-cov/cssy.js') : require('../lib/cssy.js'))
+var processor = cssy.processor
+var read = require('fs').readFileSync
+var fixp = require('./support').fixp
 
-describe('cssy parser', function(){
-
-  beforeEach(function() {
-    cssy.reset();
+describe('cssy parser', function () {
+  beforeEach(function () {
+    cssy.reset()
     cssy.config({
-      minify:    true,
-      sourcemap: false,
+      minify: true,
+      sourcemap: false
     })
   })
 
-  function auto(fixturePath) {
-    return function(done) {
-      var filename = fixp(fixturePath);
-      var source   = read(filename).toString();
-      var proc     = processor(filename);
-      proc(source, function(err, result) {
-        if(err) return done(err);
-        expect(result.src).to.eql("body{font-size:14px}")
+  function auto (fixturePath) {
+    return function (done) {
+      var filename = fixp(fixturePath)
+      var source = read(filename).toString()
+      var proc = processor(filename)
+      proc(source, function (err, result) {
+        if (err) return done(err)
+        expect(result.src).to.eql('body{font-size:14px}')
         done()
       })
     }

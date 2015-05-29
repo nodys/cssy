@@ -1,1 +1,1 @@
-module.exports = ".notcssy { display: box }"
+module.exports = '.notcssy { display: box }'

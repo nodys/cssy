@@ -1,27 +1,27 @@
 #!/usr/bin/env node
 
-var docflux  = require('docflux')
-var concat   = require('concat-stream')
-var async    = require('async')
-var fs       = require('fs')
-var resolve  = require('path').resolve
+var docflux = require('docflux')
+var concat = require('concat-stream')
+var async = require('async')
+var fs = require('fs')
+var resolve = require('path').resolve
 
-var DEPTH    = process.env.DEPTH || 2;
-var INDENT   = process.env.INDENT ? true : false;
+var DEPTH = process.env.DEPTH || 2
+var INDENT = process.env.INDENT
 
 // Run
 async.series({
   CssyBrowser: flux('../lib/cssy-browser.js'),
-  readme:      read('../readme.md'),
-}, function(err, results) {
+  readme: read('../readme.md')
+}, function (err, results) {
+  if (err) throw err
   fs.writeFile(
     resolve(__dirname, '../readme.md'),
     substitute(results, results.readme),
-    function(err) {
-      if(err) throw err;
+    function (err) {
+      if (err) throw err
     })
 })
-
 
 /**
  * Return a docflux transformer function
@@ -32,12 +32,12 @@ async.series({
  * @return {Function}
  *         Function for async.js
  */
-function flux(path) {
-  return function(done) {
+function flux (path) {
+  return function (done) {
     fs.createReadStream(resolve(__dirname, path))
       .pipe(docflux())
-      .pipe(docflux.markdown({depth:DEPTH, indent: INDENT}))
-      .pipe(concat(function(data) {
+      .pipe(docflux.markdown({depth: DEPTH, indent: INDENT}))
+      .pipe(concat(function (data) {
         done(null, data.toString())
       }))
   }
@@ -52,10 +52,10 @@ function flux(path) {
  * @return {Function}
  *         Function for async.js
  */
-function read(path) {
-  return function(done) {
+function read (path) {
+  return function (done) {
     fs.createReadStream(resolve(__dirname, path))
-      .pipe(concat(function(data) {
+      .pipe(concat(function (data) {
         done(null, data.toString())
       }))
   }
@@ -77,25 +77,25 @@ function read(path) {
  *
  * @return {String} Resulting source
  */
-function substitute(data, source) {
-  var inside;
-  var out = [];
-  source.split('\n').forEach(function(line) {
-    var match;
-    if(inside) {
-      match = (new RegExp('<!--\\s+END\\s+('+inside+')\\s+-->')).exec(line)
-      if(match) {
-        out.push('<!-- START '+inside+' -->\n\n' +data[inside]+ '\n\n<!-- END '+inside+' -->')
-        inside    = null
+function substitute (data, source) {
+  var inside
+  var out = []
+  source.split('\n').forEach(function (line) {
+    var match
+    if (inside) {
+      match = (new RegExp('<!--\\s+END\\s+(' + inside + ')\\s+-->')).exec(line)
+      if (match) {
+        out.push('<!-- START ' + inside + ' -->\n\n' + data[inside] + '\n\n<!-- END ' + inside + ' -->')
+        inside = null
       }
     } else {
       match = /<!--\s+START\s+(\w+)\s+-->/.exec(line)
-      if(match && data[match[1]]) {
+      if (match && data[match[1]]) {
         inside = match[1]
       } else {
-        out.push(line);
+        out.push(line)
       }
     }
   })
-  return out.join('\n');
+  return out.join('\n')
 }

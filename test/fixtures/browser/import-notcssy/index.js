@@ -1,2 +1,2 @@
 var css = require('./index.css')
-css.insert();
+css.insert()

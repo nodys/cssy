@@ -1,49 +1,49 @@
-/* jshint undef: false, unused: false */
+/* global describe it beforeEach */
 
-var expect           = require('expect.js')
-var cssy             = (process.env.COVERAGE ? require('../lib-cov/cssy.js') : require('../lib/cssy.js'))
-var read             = require('fs').readFileSync
-var concatStream     = require('concat-stream')
-var jsdom            = require('jsdom')
-var browserify       = require('browserify')
+var expect = require('expect.js')
+var cssy = (process.env.COVERAGE ? require('../lib-cov/cssy.js') : require('../lib/cssy.js'))
+var read = require('fs').readFileSync
+var concatStream = require('concat-stream')
+var jsdom = require('jsdom')
+var browserify = require('browserify')
 
-var fixp             = require('./support').fixp
+var fixp = require('./support').fixp
 
-describe('cssy browser', function(){
-
-  beforeEach(function() {
-    cssy.reset();
+describe('cssy browser', function () {
+  beforeEach(function () {
+    cssy.reset()
     cssy.config({
-      minify:    true,
-      sourcemap: false,
+      minify: true,
+      sourcemap: false
     })
   })
 
-  function readJsdomError(errors) {
-    var msg = errors.reduce(function(memo, item) {
-      return memo += item.type + ' ' + item.message + ':\n  ' + item.data.error.message
+  function readJsdomError (errors) {
+    var msg = errors.reduce(function (memo, item) {
+      memo += item.type + ' ' + item.message + ':\n  ' + item.data.error.message
+      return memo
     }, '')
-    return new Error(msg);
+    return new Error(msg)
   }
 
-  function simu(fixturePath, callback) {
-    var srcPath  = fixp(fixturePath) + '/index.js';
-    var html     = read(fixp(fixturePath) + '/index.html');
+  function simu (fixturePath, callback) {
+    var srcPath = fixp(fixturePath) + '/index.js'
+    var html = read(fixp(fixturePath) + '/index.html')
 
     browserify(srcPath)
-    .plugin(cssy, {remedy:true})
-    .bundle().pipe(concatStream(function(result) {
-      var bundle = result.toString();
+      .plugin(cssy, {remedy: true})
+      .bundle().pipe(concatStream(function (result) {
+      var bundle = result.toString()
       jsdom.env({
         html: html.toString(),
-        src : [bundle],
-        created: function(error, window) {
-          if(error) return callback(error);
+        src: [bundle],
+        created: function (error, window) {
+          if (error) return callback(error)
           jsdom.getVirtualConsole(window).sendTo(console)
         },
-        done: function(errors, window) {
-          if(errors && errors.length)  {
-            return callback(readJsdomError(errors));
+        done: function (errors, window) {
+          if (errors && errors.length) {
+            return callback(readJsdomError(errors))
           }
           callback(null, window)
         }
@@ -51,14 +51,14 @@ describe('cssy browser', function(){
     }))
   }
 
-  function auto(fixturePath) {
-    var expected = read(fixp(fixturePath) + '/expected.html').toString().trim().replace(/\n/g,'');;
-    return function(done) {
-      simu(fixturePath, function(err, window) {
-        if(err) return done(err)
-        var result = window.document.documentElement.outerHTML.trim().replace(/\n/g,'');
+  function auto (fixturePath) {
+    var expected = read(fixp(fixturePath) + '/expected.html').toString().trim().replace(/\n/g, '')
+    return function (done) {
+      simu(fixturePath, function (err, window) {
+        if (err) return done(err)
+        var result = window.document.documentElement.outerHTML.trim().replace(/\n/g, '')
         expect(result).to.eql(expected)
-        done();
+        done()
       })
     }
   }
@@ -90,58 +90,60 @@ describe('cssy browser', function(){
   it('.toString() should return css source (implicit toString())',
     auto('browser/tostring'))
 
-  it('If enabled, style must listening for cssy livereload web socket', function(done) {
-
+  it('If enabled, style must listening for cssy livereload web socket', function (done) {
     // Attach to a mock http server to enable livereload
-    cssy.attachServer({on:function() {}});
+    cssy.attachServer({on: function () {}})
 
-    var fixturePath = 'browser/livereload';
-    var srcPath     = fixp(fixturePath) + '/index.js';
-    var html        = read(fixp(fixturePath) + '/index.html');
-    var expected    = read(fixp(fixturePath) + '/expected.html').toString().trim().replace(/\n/g,'');;
-    var socket;
+    var fixturePath = 'browser/livereload'
+    var srcPath = fixp(fixturePath) + '/index.js'
+    var html = read(fixp(fixturePath) + '/index.html')
+    var expected = read(fixp(fixturePath) + '/expected.html').toString().trim().replace(/\n/g, '')
+    var socket
 
-    browserify(srcPath).bundle().pipe(concatStream(function(result) {
-      var bundle = result.toString();
+    browserify(srcPath).bundle().pipe(concatStream(function (result) {
+      var bundle = result.toString()
       jsdom.env({
         'html': html,
-        'src' : [bundle],
-        'created': function(errors, window) {
-          if(errors && errors.length)  return done(readJsdomError(errors));
+        'src': [bundle],
+        'created': function (errors, window) {
+          if (errors && errors.length) {
+            return done(readJsdomError(errors))
+          }
 
           // Mock XMLHttpRequest for lrio
-          window.XMLHttpRequest = function() {
-            var self = this;
-            self.readyState = 2;
-            self.getResponseHeader = function() {return 'enabled'}
-            self.open = function() {}
-            self.send = function() {
+          window.XMLHttpRequest = function () {
+            var self = this
+            self.readyState = 2
+            self.getResponseHeader = function () {return 'enabled'}
+            self.open = function () {}
+            self.send = function () {
               self.onreadystatechange()
             }
           }
           // Mock WebSocket for lrio
-          window.WebSocket = function() { socket = this }
+          window.WebSocket = function () { socket = this }
 
         },
-        'done': function(errors, window) {
-          if(errors && errors.length)  return done(readJsdomError(errors));
+        'done': function (errors, window) {
+          if (errors && errors.length) {
+            return done(readJsdomError(errors))
+          }
 
           // Simulate a change event :
           socket.onmessage({
             data: JSON.stringify({
               type: 'change',
-              uid:  'test/fixtures/browser/livereload/index.css',
-              src:  'body{font-size:42px}'
+              uid: 'test/fixtures/browser/livereload/index.css',
+              src: 'body{font-size:42px}'
             })
           })
 
-          var result = window.document.documentElement.outerHTML.trim().replace(/\n/g,'');
+          var result = window.document.documentElement.outerHTML.trim().replace(/\n/g, '')
           expect(result).to.eql(expected)
-          done();
+          done()
         }
       })
     }))
   })
-
 
 })

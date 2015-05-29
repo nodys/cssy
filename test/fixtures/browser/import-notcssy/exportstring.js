@@ -1,1 +1,1 @@
-module.exports = "body { background-color : #663399; }"
+module.exports = 'body { background-color : #663399; }'
