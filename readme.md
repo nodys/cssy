@@ -420,9 +420,15 @@ See [CssyBrowser.insert()](#cssybrowserinsertto-media)
 
 Create and append a `<style>` element in the dom at `to`. If the source contain
 `@import` at-rules, imported CssyBrowser modules are injected too.
+
 The content of all the injected `<style>` element is binded to css source
 change: When `.update()` is called by you or by the cssy's live source
 reload server.
+
+If a style element with the same parent (`to`) and the same media query
+already exists, then this function only increment a counter for this kind
+of pair (parent/media-query). And remove() calls only decrement this
+counter until no more consumer require this style to be inserted.
 
 **Parameters:**
 
