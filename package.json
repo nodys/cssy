@@ -22,8 +22,8 @@
     "doc": "./support/updatedoc.js"
   },
   "dependencies": {
-    "async": "^0.9.0",
-    "chokidar": "^0.12.6",
+    "async": "^1.0.0",
+    "chokidar": "^1.0.1",
     "concat-stream": "^1.4.6",
     "csswring": "^3.0.0",
     "debug": "^2.0.0",
@@ -35,23 +35,23 @@
     "semver": "^4.2.0",
     "slash": "^1.0.0",
     "syntax-error": "^1.1.1",
-    "through2": "^1.1.1"
+    "through2": "^0.6.5"
   },
   "devDependencies": {
-    "browserify": "^8.1.1",
+    "browserify": "^10.2.3",
     "docflux": "^1.1.2",
     "expect.js": "*",
-    "jsdom": "^3.0.1",
+    "jsdom": "^5.4.3",
     "jshint": "*",
-    "less": "^2.2.0",
+    "less": "^2.5.1",
     "mocha": "*",
-    "node-sass": "^1.2.3",
-    "postcss-calc": "^3.0.0",
+    "node-sass": "^3.1.2",
+    "postcss-calc": "^4.0.1",
     "postcss-custom-properties": "^3.0.0",
     "rework": "^1.0.1",
     "rework-calc": "^1.1.0",
     "rework-vars": "^3.1.1",
-    "stylus": "^0.49.1"
+    "stylus": "^0.51.1"
   },
   "browser": "./src/cssy-browser.js",
   "keywords": [
