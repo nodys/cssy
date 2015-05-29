@@ -28,7 +28,7 @@
     "csswring": "^3.0.0",
     "debug": "^2.0.0",
     "extend": "^2.0.0",
-    "lrio": "^1.1.0",
+    "lrio": "^1.2.0",
     "postcss": "^4.0.1",
     "relative-package": "^1.0.0",
     "resolve": "^1.0.0",
