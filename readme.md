@@ -1,4 +1,16 @@
-# cssy [![Build Status](https://secure.travis-ci.org/nodys/cssy.png?branch=master)](http://travis-ci.org/nodys/cssy) [![NPM version](https://badge-me.herokuapp.com/api/npm/cssy.png)](http://badges.enytc.com/for/npm/cssy)
+# cssy
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
+[![travis][travis-image]][travis-url]
+[![npm][npm-image]][npm-url]
+[![downloads][downloads-image]][downloads-url]
+
+[travis-image]: https://img.shields.io/travis/nodys/cssy.svg?style=flat&branch=master
+[travis-url]: https://travis-ci.org/nodys/cssy
+[npm-image]: https://img.shields.io/npm/v/cssy.svg?style=flat
+[npm-url]: https://npmjs.org/package/cssy
+[downloads-image]: https://img.shields.io/npm/dm/cssy.svg?style=flat
+[downloads-url]: https://npmjs.org/package/cssy
+
 
 > A browserify transform for css (with vitamins): Use css sources **like any other module** but **without forgo** the benefits of **pre-processing** and **live source reload**.
 
@@ -477,4 +489,6 @@ The current css source
 
 ---
 
-License: [The MIT license](./LICENSE)
+License: [MIT](./LICENSE)
+
+[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
