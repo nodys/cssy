@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/nodys/cssy.git"
   },
-  "licenses": "MIT",
+  "license": "MIT",
   "main": "./lib/cssy.js",
   "engines": {
     "node": ">= 0.10"
