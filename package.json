@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "async": "^1.3.0",
+    "autoprefixer": "^5",
     "chokidar": "^1.0.3",
     "concat-stream": "^1.5.0",
     "csswring": "^3.0.0",

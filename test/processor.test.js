@@ -115,4 +115,17 @@ describe('cssy processor', function () {
     })
   })
 
+  describe('supplied autoprefixer processor (cssy/autoprefixer)', function () {
+    it('should run autoprefixer on source', function (done) {
+      var filename = fixp('autoprefixer/source.css')
+      var source = read(filename).toString()
+      var proc = processor(filename)
+      proc(source, function (err, result) {
+        if (err) return done(err)
+        expect(result.src).to.eql('body{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex}')
+        done()
+      })
+    })
+  })
+
 })

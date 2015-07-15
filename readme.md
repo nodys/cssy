@@ -200,6 +200,30 @@ module.exports = function(ctx, done) {
 }
 ```
 
+**Note:** As [autoprefixer](https://www.npmjs.com/package/autoprefixer) is very useful, so cssy bundle a processor for it (`cssy/autoprefixer`).
+
+You still have to declare it using browserify transform options:
+
+Api:
+```javascript
+b.transform('cssy', {'processor': ['cssy/autoprefixer']})
+```
+
+Or in your package.json:
+```javascript
+{
+// ...
+  "browserify": {
+    "transform": [
+      ["cssy", { "processor": ["cssy/autoprefixer"] }]
+    ]
+  }
+// ...
+}
+```
+
+
+
 ## Global pre/post processor
 
 Global pre/post processor must be used only at *application level* (where you bundle your application) for things like global `url()` rebasing, optimizations for production, etc. Pre/post processor share the same api than [cssy processor](#processor).
