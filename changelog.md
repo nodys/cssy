@@ -1,6 +1,14 @@
 Changelog
 =========
 
+v1.2.0 - Benevolent Seal (2015-07-15) 
+----------------------------------------------------------------------
+
+  - feat: Supply autoprefixer processor
+  - fix: License field
+  - fix: Add more explicit error message when parser can't find dependency
+
+
 v1.1.2 - Lovable Eagle (2015-05-29) 
 ----------------------------------------------------------------------
 
