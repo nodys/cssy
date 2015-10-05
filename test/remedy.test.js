@@ -101,5 +101,4 @@ describe('cssy with remedy plugin', function () {
       done()
     }))
   })
-
 })

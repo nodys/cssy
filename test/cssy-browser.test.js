@@ -33,22 +33,22 @@ describe('cssy browser', function () {
     browserify(srcPath)
       .plugin(cssy, {remedy: true})
       .bundle().pipe(concatStream(function (result) {
-      var bundle = result.toString()
-      jsdom.env({
-        html: html.toString(),
-        src: [bundle],
-        created: function (error, window) {
-          if (error) return callback(error)
-          jsdom.getVirtualConsole(window).sendTo(console)
-        },
-        done: function (errors, window) {
-          if (errors && errors.length) {
-            return callback(readJsdomError(errors))
+        var bundle = result.toString()
+        jsdom.env({
+          html: html.toString(),
+          src: [bundle],
+          created: function (error, window) {
+            if (error) return callback(error)
+            jsdom.getVirtualConsole(window).sendTo(console)
+          },
+          done: function (errors, window) {
+            if (errors && errors.length) {
+              return callback(readJsdomError(errors))
+            }
+            callback(null, window)
           }
-          callback(null, window)
-        }
-      })
-    }))
+        })
+      }))
   }
 
   function auto (fixturePath) {
@@ -114,7 +114,9 @@ describe('cssy browser', function () {
           window.XMLHttpRequest = function () {
             var self = this
             self.readyState = 2
-            self.getResponseHeader = function () {return 'enabled'}
+            self.getResponseHeader = function () {
+              return 'enabled'
+            }
             self.open = function () {}
             self.send = function () {
               self.onreadystatechange()
@@ -122,7 +124,6 @@ describe('cssy browser', function () {
           }
           // Mock WebSocket for lrio
           window.WebSocket = function () { socket = this }
-
         },
         'done': function (errors, window) {
           if (errors && errors.length) {
@@ -145,5 +146,4 @@ describe('cssy browser', function () {
       })
     }))
   })
-
 })

@@ -69,7 +69,7 @@ describe('cssy processor', function () {
   it('should throw an error on unknown format', function (done) {
     var filename = fixp('basic/unknownformat.metacss')
     var source = read(filename).toString()
-    var proc = processor(filename, {match: /metacss$/ })
+    var proc = processor(filename, { match: /metacss$/ })
     proc(source, function (err, result) {
       expect(err.message).to.contain('Try to use appropriate parser for')
       done()
@@ -99,7 +99,6 @@ describe('cssy processor', function () {
       expect(result.src).to.contain('/*# sourceURL=test/fixtures/basic/source.css.output')
       done()
     })
-
   })
 
   describe('with source processor', function () {
@@ -127,5 +126,4 @@ describe('cssy processor', function () {
       })
     })
   })
-
 })

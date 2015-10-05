@@ -37,5 +37,4 @@ describe('cssy parser', function () {
   it('with stylus', auto('parser/source.styl'))
 
   it('with specific parser', auto('parser/source.mycss'))
-
 })

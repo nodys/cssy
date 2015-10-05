@@ -23,5 +23,4 @@ domready(function () {
   setInterval(function () {
     updateMe.update('.feat.updateme::before { transition: all 2s; background-color: #' + Math.floor(Math.random() * 16777215).toString(16) + '; }')
   }, 3000)
-
 })

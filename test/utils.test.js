@@ -100,17 +100,16 @@ describe('cssy utils', function () {
 
     it('should get the cssy config for given package.json path', function () {
       expect(utils.getCssyConfig(pkgpath))
-        .to.eql({'processor': './cssProcessor.js' })
+        .to.eql({ 'processor': './cssProcessor.js' })
     })
 
     it('should get the cssy config for given package.json object', function () {
       expect(utils.getCssyConfig(require(pkgpath)))
-        .to.eql({'processor': './cssProcessor.js' })
+        .to.eql({ 'processor': './cssProcessor.js' })
     })
 
     it('should return an empty config object if package can not be read', function () {
       expect(utils.getCssyConfig('invalid')).to.eql({})
-
     })
   })
 
@@ -120,5 +119,4 @@ describe('cssy utils', function () {
         .to.eql(resolve(__dirname, '../package.json'))
     })
   })
-
 })

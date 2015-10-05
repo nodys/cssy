@@ -33,7 +33,7 @@ app.use(serveStatic(resolve(__dirname, './public')))
 var bundler = watchify(browserify(extend({debug: true}, watchify.args)))
   .add(resolve(__dirname, './src/index.js'))
   .on('update', function (files) {
-    if (files.some(function (f) {return /\.js$/i.test(f)})) {
+    if (files.some(function (f) { return /\.js$/i.test(f) })) {
       // Only if some changed files are js sources
       reloader.broadcast({files: files})
     }

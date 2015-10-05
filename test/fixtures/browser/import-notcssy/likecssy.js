@@ -23,5 +23,4 @@ exports.insert = function (to, media) {
       element.parentNode.removeChild(element)
     }
   }
-
 }

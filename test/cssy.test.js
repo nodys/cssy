@@ -65,7 +65,6 @@ describe('cssy', function () {
         expect(src).to.contain('body{font-size:14px}')
         done()
       }))
-
   })
 
   describe('.attachServer()', function () {
@@ -86,7 +85,6 @@ describe('cssy', function () {
 
       // Emit change on a file
       cssylr(fixp('import/source.css'))
-
     })
   })
 
@@ -170,7 +168,6 @@ describe('cssy', function () {
 
         // Emit change on file:
         mockChokidar.emit('change', mockChokidar.file)
-
       })
 
       // Mock lrioServer broadcast method:
@@ -180,7 +177,6 @@ describe('cssy', function () {
         expect(data.src).to.contain('font-size:14px')
         done()
       }
-
     })
 
     it('should accept string (path resolved from cwd())', function (done) {
