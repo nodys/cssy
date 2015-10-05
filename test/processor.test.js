@@ -96,7 +96,6 @@ describe('cssy processor', function () {
       if (err) return done(err)
       expect(result.src).to.contain('body{font-size:14px}')
       expect(result.src).to.contain('/*# sourceMappingURL=data:application/json;base64,')
-      expect(result.src).to.contain('/*# sourceURL=test/fixtures/basic/source.css.output')
       done()
     })
   })
