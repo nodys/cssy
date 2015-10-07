@@ -1,7 +1,7 @@
 {
   "name": "cssy",
   "description": "A browserify transform for css (with vitamines)",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "author": "Jean Ponchon <jean.ponchon@novadiscovery.com>",
   "repository": {
     "type": "git",
