@@ -46,6 +46,7 @@ Want a nice cocktail recipe ? Use **source map** in combination with cssy's **li
 
 ## Installation
 
+
 ```bash
 npm install --save cssy
 ```
@@ -91,6 +92,9 @@ Path inside `parser` and `processor` options are either relative to package.json
   ]}
 
 ```
+
+
+*Notice: Starting from v2, cssy will probably works for with node.js v0.12 (and even v0.10) until the next major version, but is only tested against node.js >= v4*
 
 ## Global configuration
 
