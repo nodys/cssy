@@ -106,7 +106,7 @@ cssy.config({
 })
 ```
 
-*Css minification is done with [CSSWring](https://github.com/hail2u/node-csswring). Feel free to use another one inside a [global post-processor](#global-prepost-processor).*
+*Css minification is done with [cssnano](http://cssnano.co/) which do a lot of other optimizations. Feel free to use another one inside a [global post-processor](#global-prepost-processor).*
 
 ## Internal workflow
 
