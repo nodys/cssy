@@ -1,6 +1,14 @@
 Changelog
 =========
 
+v2.0.0 - Malicious Puppy (2015-10-07) 
+----------------------------------------------------------------------
+
+  - doc: Add a note on the use of cssnano for minification / optimization
+  - fix: Add sourceURL to sourcemap to prevent braking change.
+  - refactor: Use cssnano instead of csswring
+
+
 v1.3.0 - Nocturnal Crocodile (2015-10-05) 
 ----------------------------------------------------------------------
 
