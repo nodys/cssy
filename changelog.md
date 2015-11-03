@@ -1,6 +1,12 @@
 Changelog
 =========
 
+v2.1.0 - Colorful Chimpanzee (2015-11-03) 
+----------------------------------------------------------------------
+
+  - feat: Add cssnano minifier configurable options (and disable unsafe optimisation)
+
+
 v2.0.3 - Messy Panda (2015-10-23) 
 ----------------------------------------------------------------------
 
