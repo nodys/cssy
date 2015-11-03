@@ -104,7 +104,7 @@ At *application level* you can change some *global* cssy behaviors
 var cssy = require('cssy')
 cssy.config({
   // Enable css minification (default: false)
-  minify:  false,
+  minify:  false, // boolean or object: a cssnano options (default is {safe: true})
   // Enable source map in the generated source (default: true)
   sourcemap: true
 })
@@ -334,7 +334,7 @@ var cssy       = require('cssy');
 var b = browserify('./app.css')
 b.plugin(cssy, {
   // Global configuration:
-  minify:    true,
+  minify:    true,  // boolean or object: a cssnano options (default is {safe: true})
   sourcemap: false,
 
   // See live source reload:
