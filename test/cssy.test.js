@@ -26,7 +26,7 @@ describe('cssy', function () {
       .pipe(concatStream(function (result) {
         var src = result.toString()
         expect(src).to.contain('module.exports')
-        expect(src).to.contain("require('../../../lib/cssy-browser.js')")
+        expect(src).to.contain('cssy-browser.js')
         expect(src).to.contain('body{font-size:14px}')
         done()
       }))
@@ -61,7 +61,7 @@ describe('cssy', function () {
         expect(src).to.contain('module.exports')
         expect(src).to.contain('sourceMap')
         expect(src).to.contain('cssyio')
-        expect(src).to.contain("require('../../../lib/cssy-browser.js')")
+        expect(src).to.contain('cssy-browser.js')
         expect(src).to.contain('body{font-size:14px}')
         done()
       }))

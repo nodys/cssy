@@ -34,7 +34,7 @@ describe('cssy transform', function () {
       .pipe(concatStream(function (result) {
         var src = result.toString()
         expect(src).to.contain('module.exports')
-        expect(src).to.contain("require('../../../lib/cssy-browser.js')")
+        expect(src).to.contain('cssy-browser.js')
         expect(src).to.contain('body{font-size:14px}')
         done()
       }))
@@ -51,7 +51,7 @@ describe('cssy transform', function () {
       .pipe(concatStream(function (result) {
         var src = result.toString()
         expect(src).to.contain('module.exports')
-        expect(src).to.contain("require('../../../lib/cssyio.js')")
+        expect(src).to.contain('cssyio.js')
         expect(src).to.contain('change:test/fixtures/basic/source.css')
         done()
       }))
